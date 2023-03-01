@@ -22,7 +22,6 @@ import Head from "next/head";
 import axios from "axios";
 import { AuthRegisterRequest, IFormRegister } from "../Interface/Auth";
 import { useRouter } from "next/router";
-import { config } from "process";
 
 function Register() {
   const navigate = useRouter();

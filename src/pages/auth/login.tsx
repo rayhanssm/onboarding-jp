@@ -19,10 +19,13 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import axios from "axios";
-import { IFormLogin } from "../Interface/Auth";
+import { AuthLoginRequest, IFormLogin } from "../Interface/Auth";
 import { useRouter } from "next/router";
+import { SubmitHandler } from "react-hook-form/dist/types";
 
 function Login() {
+  const navigate = useRouter();
+
   const methods = useForm({
     resolver: yupResolver(
       yup.object().shape({
@@ -41,14 +44,16 @@ function Login() {
 
   const { control, handleSubmit, setValue } = methods;
 
-  const onSubmit: SubmitHandler<IFormRegister> = async (
-    data: IFormRegister
-  ) => {
+  const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
     try {
-      const payload: AuthRegisterRequest = data;
-      const url = "http://localhost:8001/auth/register";
-      await axios.post(url, payload);
-      navigate.push("/auth/login");
+      const payload: AuthLoginRequest = data;
+      const url = "https://onboarding-backend.bosshire.online/auth/login";
+      await axios.post(url, payload, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+        },
+      });
+      navigate.push("/job-list-candidates");
     } catch (e) {
       console.log(e);
     }
