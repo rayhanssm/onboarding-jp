@@ -1,54 +1,10 @@
 import React from "react";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import { useForm, Controller } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import {
-  Box,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
-  Stack,
+  Grid
 } from "@mui/material";
-// import { useFormik } from "formik";
-import Link from "next/link";
 import Head from "next/head";
 
-function Register() {
-  const methods = useForm({
-    resolver: yupResolver(
-      yup.object().shape({
-        email: yup
-          .string()
-          .email("Enter unique email")
-          .required("Email is required")
-          .typeError("Email is required"),
-        name: yup.string().required("Name is required"),
-        password: yup
-          .string()
-          .required("Password is required")
-          .typeError("Password is required"),
-        confirmPassword: yup
-          .string()
-          .oneOf([yup.ref("password")], "Password must be same")
-          .required("Required"),
-      })
-    ),
-  });
-
-  const { control, handleSubmit, register } = methods;
-
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
+function Home() {
   return (
     <Grid
       container
@@ -64,90 +20,8 @@ function Register() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Card sx={{ minWidth: "800px", padding: "24px" }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            marginBottom="32px"
-            align="center"
-          >
-            Register
-          </Typography>
-          <Stack spacing={2}>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Email"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Controller
-              name="name"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Name"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Controller
-              name="password"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Password"
-                  type="password"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Controller
-              name="confirmPassword"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Confirm Password"
-                  type="password"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <FormControlLabel
-              label="Register as Company"
-              control={
-                <Controller
-                  name="isCompany"
-                  control={control}
-                  render={({ field }) => <Checkbox {...field} />}
-                />
-              }
-            />
-            <Button
-              variant="contained"
-              size="large"
-              type="submit"
-              color="primary"
-            >
-              Register
-            </Button>
-          </Stack>
-        </form>
-      </Card>
     </Grid>
   );
 }
 
-export default Register;
+export default Home;

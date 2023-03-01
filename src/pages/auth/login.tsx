@@ -18,6 +18,9 @@ import {
   Stack,
 } from "@mui/material";
 import Link from "next/link";
+import axios from "axios";
+import { IFormLogin } from "../Interface/Auth";
+import { useRouter } from "next/router";
 
 function Login() {
   const methods = useForm({
@@ -25,7 +28,7 @@ function Login() {
       yup.object().shape({
         email: yup
           .string()
-          .email("Enter unique email")
+          .email("Enter valid email address")
           .required("Email is required")
           .typeError("Email is required"),
         password: yup
@@ -36,10 +39,19 @@ function Login() {
     ),
   });
 
-  const { control, handleSubmit, register } = methods;
+  const { control, handleSubmit, setValue } = methods;
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<IFormRegister> = async (
+    data: IFormRegister
+  ) => {
+    try {
+      const payload: AuthRegisterRequest = data;
+      const url = "http://localhost:8001/auth/register";
+      await axios.post(url, payload);
+      navigate.push("/auth/login");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -95,6 +107,7 @@ function Login() {
             >
               Login
             </Button>
+            <Button href="/auth/register">Register here</Button>
           </Stack>
         </form>
       </Card>

@@ -25,7 +25,7 @@ import {
 import { Dayjs } from "dayjs";
 import Link from "next/link";
 
-function CreateJob() {
+function UpdateJob() {
   const methods = useForm({
     resolver: yupResolver(
       yup.object().shape({
@@ -158,7 +158,7 @@ function CreateJob() {
               type="submit"
               color="primary"
             >
-              Create Job
+              Update Job
             </Button>
           </Stack>
         </form>
@@ -167,4 +167,4 @@ function CreateJob() {
   );
 }
 
-export default CreateJob;
+export default UpdateJob;
