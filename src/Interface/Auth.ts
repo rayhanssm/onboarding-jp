@@ -19,3 +19,7 @@ export interface IFormLogin {
 export interface AuthLoginRequest extends IFormLogin {
 
 }
+
+export interface IUser {
+    
+}

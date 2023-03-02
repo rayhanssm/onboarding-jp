@@ -1,4 +1,4 @@
-export interface IJob {
+export interface IJobListDetail {
     id: number
     title: string
     applicationCount: number

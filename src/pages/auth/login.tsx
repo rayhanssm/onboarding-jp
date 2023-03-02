@@ -26,7 +26,7 @@ import { SubmitHandler } from "react-hook-form/dist/types";
 function Login() {
   const navigate = useRouter();
 
-  const methods = useForm({
+  const methods = useForm<IFormLogin>({
     resolver: yupResolver(
       yup.object().shape({
         email: yup
@@ -44,20 +44,20 @@ function Login() {
 
   const { control, handleSubmit } = methods;
 
-  // const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
-  //   try {
-  //     const payload: AuthLoginRequest = data;
-  //     const url = "https://onboarding-backend.bosshire.online/auth/login";
-  //     await axios.post(url, payload, {
-  //       headers: {
-  //         AccessControlAllowOrigin: "*",
-  //       },
-  //     });
-  //     navigate.push("/job-list-candidates");
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
+    try {
+      const payload: AuthLoginRequest = data;
+      const url = "https://onboarding-backend.bosshire.online/auth/login";
+      await axios.post(url, payload, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+        },
+      });
+      navigate.push("/jobs");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <Grid
@@ -69,7 +69,7 @@ function Login() {
       sx={{ minHeight: "100vh" }}
     >
       <Card sx={{ minWidth: "800px", padding: "24px" }}>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Typography
             variant="h4"
             fontWeight="bold"
