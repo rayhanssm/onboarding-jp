@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import axios from "axios";
-import { AuthLoginRequest, IFormLogin } from "../Interface/Auth";
+import { AuthLoginRequest, IFormLogin } from "../../Interface/Auth";
 import { useRouter } from "next/router";
 import { SubmitHandler } from "react-hook-form/dist/types";
 
@@ -42,22 +42,22 @@ function Login() {
     ),
   });
 
-  const { control, handleSubmit, setValue } = methods;
+  const { control, handleSubmit } = methods;
 
-  const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
-    try {
-      const payload: AuthLoginRequest = data;
-      const url = "https://onboarding-backend.bosshire.online/auth/login";
-      await axios.post(url, payload, {
-        headers: {
-          AccessControlAllowOrigin: "*",
-        },
-      });
-      navigate.push("/job-list-candidates");
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  // const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
+  //   try {
+  //     const payload: AuthLoginRequest = data;
+  //     const url = "https://onboarding-backend.bosshire.online/auth/login";
+  //     await axios.post(url, payload, {
+  //       headers: {
+  //         AccessControlAllowOrigin: "*",
+  //       },
+  //     });
+  //     navigate.push("/job-list-candidates");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   return (
     <Grid
@@ -69,7 +69,7 @@ function Login() {
       sx={{ minHeight: "100vh" }}
     >
       <Card sx={{ minWidth: "800px", padding: "24px" }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form>
           <Typography
             variant="h4"
             fontWeight="bold"

@@ -51,8 +51,8 @@ function CreateJob() {
 
   const { control, handleSubmit, register } = methods;
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = () => {
+    console.log();
   };
 
   return (
@@ -61,7 +61,11 @@ function CreateJob() {
         <AppBar position="static">
           <Toolbar>
             <Box sx={{ flexGrow: 1 }}>
-              <Button color="inherit" component={Link} href="/job-list-candidates">
+              <Button
+                color="inherit"
+                component={Link}
+                href="/job-list-candidates"
+              >
                 Jobs
               </Button>
               <Button color="inherit" component={Link} href="/">

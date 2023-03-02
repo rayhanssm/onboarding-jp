@@ -51,8 +51,8 @@ function UpdateJob() {
 
   const { control, handleSubmit, register } = methods;
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = () => {
+    console.log();
   };
 
   return (

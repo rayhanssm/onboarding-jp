@@ -20,7 +20,7 @@ import {
 import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
-import { AuthRegisterRequest, IFormRegister } from "../Interface/Auth";
+import { AuthRegisterRequest, IFormRegister } from "../../Interface/Auth";
 import { useRouter } from "next/router";
 
 function Register() {
