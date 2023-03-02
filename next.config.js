@@ -5,6 +5,7 @@ const nextConfig = {
 
 // module.exports = nextConfig
 module.exports = {
+  output: "standalone",
   redirects: async () => {
     return [
       {
