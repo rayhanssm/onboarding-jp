@@ -2,7 +2,7 @@ export interface IFormRegister {
     email: string
     name: string
     password: string
-    confirmPassword: string
+    confirmationPassword: string
     isCompany: number | boolean
 }
 

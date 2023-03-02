@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import { useForm, Controller } from "react-hook-form";
@@ -22,9 +22,12 @@ import axios from "axios";
 import { AuthLoginRequest, IFormLogin } from "../../Interface/Auth";
 import { useRouter } from "next/router";
 import { SubmitHandler } from "react-hook-form/dist/types";
+import { getCookie, setCookie } from "@/services/cookie";
 
 function Login() {
   const navigate = useRouter();
+
+  // const cookies = new Cookies();
 
   const methods = useForm<IFormLogin>({
     resolver: yupResolver(
@@ -48,11 +51,13 @@ function Login() {
     try {
       const payload: AuthLoginRequest = data;
       const url = "https://onboarding-backend.bosshire.online/auth/login";
-      await axios.post(url, payload, {
-        headers: {
-          AccessControlAllowOrigin: "*",
-        },
-      });
+      const res = await axios.post(url, payload, {});
+      // console.log(res.data)
+      const { token } = res.data.data;
+      console.log(token);
+      setCookie("access_token", token, 240);
+      getCookie("access_token");
+      
       navigate.push("/jobs");
     } catch (e) {
       console.log(e);

@@ -39,7 +39,7 @@ function Register() {
           .string()
           .required("Password is required")
           .typeError("Password is required"),
-        confirmPassword: yup
+        confirmationPassword: yup
           .string()
           .oneOf([yup.ref("password")], "Password must be same")
           .required("Password is required"),
@@ -133,7 +133,7 @@ function Register() {
               )}
             />
             <Controller
-              name="confirmPassword"
+              name="confirmationPassword"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <TextField
