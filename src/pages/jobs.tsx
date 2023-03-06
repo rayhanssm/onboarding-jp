@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { IJobListDetail } from "../Interface/Job";
+import { IJobListDetail } from "../interfaces/Job";
 import {
   Box,
   FormControlLabel,
@@ -21,14 +21,23 @@ import {
   Pagination,
 } from "@mui/material";
 import Link from "next/link";
+import { getCookie } from "@/services/cookie";
 
 function JobListCandidate() {
+  const [user, setUser] = useState<any | null>(null);
   const [id, setId] = useState(0);
   const [title, setTitle] = useState("");
   const [applicationCount, setApplicationCount] = useState(0);
   const [openDate, setOpenDate] = useState(0);
   const [company, setCompany] = useState("");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    let getUser = getCookie("user");
+    setUser(JSON.parse(getUser));
+  }, []);
+
+  console.log(user);
 
   // const handlePageChange = (e, value) => {
   //   setPage(value);
@@ -69,24 +78,19 @@ function JobListCandidate() {
     },
   ]);
 
-  const isCompany = 1;
   let jobContent;
 
-  if (isCompany) {
+  if (user && user.role === "Company") {
     jobContent = (
       <>
         <Box sx={{ flexGrow: 1 }} marginBottom="24px">
           <AppBar position="static">
             <Toolbar>
               <Box sx={{ flexGrow: 1 }}>
-                <Button
-                  color="inherit"
-                  component={Link}
-                  href="/job-list-candidates"
-                >
+                <Button color="inherit" component={Link} href="/jobs">
                   Jobs
                 </Button>
-                <Button color="inherit" component={Link} href="/hhh">
+                <Button color="inherit" component={Link} href="/applications">
                   Applications
                 </Button>
               </Box>
@@ -116,42 +120,53 @@ function JobListCandidate() {
           <Button variant="outlined">Search</Button>
         </Stack>
         <Grid container>
+          <Button
+            variant="contained"
+            color="success"
+            component={Link}
+            href="/create-job"
+            sx={{ marginX: "8px" }}
+          >
+            Create Job
+          </Button>
           {data.map((d) => (
             <Grid item xs={12}>
               <Card
+                component={Link}
+                href={"jobs/" + id}
                 sx={{
-                  padding: "16px",
+                  padding: "8px",
                   marginX: "8px",
                   marginY: "16px",
                   display: "flex",
+                  justifyContent: "space-between",
+                  textDecoration: "none",
                 }}
               >
-                <Box sx={{ display: "flex", flexDirection: "column " }}>
-                  <CardContent>
-                    <Typography
-                      variant="h5"
-                      fontWeight="bold"
-                      marginBottom="8px"
+                <CardContent>
+                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                    {d.title}
+                  </Typography>
+                  <Typography variant="body1" marginBottom="4px">
+                    {d.company}
+                  </Typography>
+                  <Typography variant="body2" color="GrayText">
+                    {d.applicationCount} Applicants
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  <Box>
+                    <Button
+                      variant="contained"
+                      size="large"
+                      type="submit"
+                      color="error"
                     >
-                      {d.title}
-                    </Typography>
-                    <Typography variant="body1" marginBottom="4px">
-                      {d.company}
-                    </Typography>
-                    <Typography variant="body2" color="GrayText">
-                      {d.applicationCount} Applicants
-                    </Typography>
-                  </CardContent>
-                </Box>
-                <CardActions>
-                  <Button
-                    variant="contained"
-                    size="large"
-                    type="submit"
-                    color="error"
-                  >
-                    Delete
-                  </Button>
+                      Delete
+                    </Button>
+                  </Box>
                 </CardActions>
               </Card>
             </Grid>
@@ -170,7 +185,7 @@ function JobListCandidate() {
                 <Button color="inherit" component={Link} href="/jobs">
                   Jobs
                 </Button>
-                <Button color="inherit" component={Link} href="/hhh">
+                <Button color="inherit" component={Link} href="/applications">
                   Applications
                 </Button>
               </Box>
@@ -202,7 +217,7 @@ function JobListCandidate() {
         <Grid container>
           {data.map((d) => (
             <Grid item xs={4}>
-              <Card sx={{ padding: "16px", marginX: "8px", marginY: "16px" }}>
+              <Card sx={{ padding: "8px", marginX: "8px", marginY: "16px" }}>
                 <CardContent>
                   <Typography variant="h5" fontWeight="bold" marginBottom="8px">
                     {d.title}
@@ -214,8 +229,10 @@ function JobListCandidate() {
                     {d.applicationCount} Applicants
                   </Typography>
                 </CardContent>
-                <CardActions>
+                <CardActions sx={{ display: "flex", justifyContent: "end" }}>
                   <Button
+                    component={Link}
+                    href={"jobs/" + id}
                     variant="contained"
                     size="large"
                     type="submit"

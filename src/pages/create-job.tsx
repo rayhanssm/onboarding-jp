@@ -3,7 +3,7 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -24,8 +24,13 @@ import {
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import Link from "next/link";
+import { ICreateJob } from "@/interfaces/Job";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 function CreateJob() {
+  const navigate = useRouter();
+
   const methods = useForm({
     resolver: yupResolver(
       yup.object().shape({
@@ -49,11 +54,23 @@ function CreateJob() {
     ),
   });
 
-  const { control, handleSubmit, register } = methods;
+  const { control, handleSubmit, setValue } = methods;
 
-  const onSubmit = () => {
-    console.log();
-  };
+  const onSubmit = () => {};
+  // const onSubmit: SubmitHandler<ICreateJob> = async (data: ICreateJob) => {
+  //   try {
+  //     const payload: ICreateJob = data;
+  //     const url = "https://onboarding-backend.bosshire.online/jobs";
+  //     await axios.post(url, payload, {
+  //       headers: {
+  //         AccessControlAllowOrigin: "*",
+  //       },
+  //     });
+  //     navigate.push("/jobs");
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
 
   return (
     <>
@@ -61,11 +78,7 @@ function CreateJob() {
         <AppBar position="static">
           <Toolbar>
             <Box sx={{ flexGrow: 1 }}>
-              <Button
-                color="inherit"
-                component={Link}
-                href="/job-list-candidates"
-              >
+              <Button color="inherit" component={Link} href="/jobs">
                 Jobs
               </Button>
               <Button color="inherit" component={Link} href="/">

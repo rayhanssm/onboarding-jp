@@ -6,3 +6,12 @@ export interface IJobListDetail {
     closeDate: Date
     company: string
 }
+
+export interface ICreateJob {
+    title: string
+    description: string
+    openDate: Date
+    closeDate: Date
+}
+
+

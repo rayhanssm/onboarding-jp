@@ -61,7 +61,7 @@ function UpdateJob() {
         <AppBar position="static">
           <Toolbar>
             <Box sx={{ flexGrow: 1 }}>
-              <Button color="inherit" component={Link} href="/job-list-candidates">
+              <Button color="inherit" component={Link} href="/jobs">
                 Jobs
               </Button>
               <Button color="inherit" component={Link} href="/">
@@ -82,7 +82,7 @@ function UpdateJob() {
             marginBottom="32px"
             align="center"
           >
-            Add Job
+            Update Job
           </Typography>
           <Stack spacing={2}>
             <Controller

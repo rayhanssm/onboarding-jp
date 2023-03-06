@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import axios from "axios";
-import { AuthLoginRequest, IFormLogin } from "../../Interface/Auth";
+import { AuthLoginRequest, IFormLogin, IGetUser } from "../../interfaces/Auth";
 import { useRouter } from "next/router";
 import { SubmitHandler } from "react-hook-form/dist/types";
 import { getCookie, setCookie } from "@/services/cookie";
@@ -49,15 +49,21 @@ function Login() {
 
   const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
     try {
-      const payload: AuthLoginRequest = data;
-      const url = "https://onboarding-backend.bosshire.online/auth/login";
-      const res = await axios.post(url, payload, {});
-      // console.log(res.data)
+      const payloadLogin: AuthLoginRequest = data;
+      const urlLogin = "https://onboarding-backend.bosshire.online/auth/login";
+      const urlGetUser = "https://onboarding-backend.bosshire.online/auth/user";
+
+      const res = await axios.post(urlLogin, payloadLogin);
       const { token } = res.data.data;
-      console.log(token);
       setCookie("access_token", token, 240);
-      getCookie("access_token");
-      
+
+      const resUser = await axios.get(urlGetUser, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      setCookie("user", JSON.stringify(resUser.data.data), 240);
+
       navigate.push("/jobs");
     } catch (e) {
       console.log(e);

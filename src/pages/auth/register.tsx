@@ -20,7 +20,7 @@ import {
 import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
-import { AuthRegisterRequest, IFormRegister } from "../../Interface/Auth";
+import { AuthRegisterRequest, IFormRegister } from "../../interfaces/Auth";
 import { useRouter } from "next/router";
 
 function Register() {
@@ -34,7 +34,11 @@ function Register() {
           .email("Enter valid email address")
           .required("Email is required")
           .typeError("Email is required"),
-        name: yup.string().required("Name is required"),
+        name: yup
+          .string()
+          .trim()
+          .matches(/^[a-zA-Z ]+$/, "Name can only contain letters and spaces")
+          .required("Name is required"),
         password: yup
           .string()
           .required("Password is required")
