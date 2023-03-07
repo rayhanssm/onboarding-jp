@@ -16,6 +16,9 @@ import {
   FormHelperText,
   Checkbox,
   Stack,
+  Snackbar,
+  Alert,
+  IconButton,
 } from "@mui/material";
 import Link from "next/link";
 import axios from "axios";
@@ -26,8 +29,6 @@ import { getCookie, setCookie } from "@/services/cookie";
 
 function Login() {
   const navigate = useRouter();
-
-  // const cookies = new Cookies();
 
   const methods = useForm<IFormLogin>({
     resolver: yupResolver(
@@ -47,6 +48,8 @@ function Login() {
 
   const { control, handleSubmit } = methods;
 
+  const [error, setError] = useState("");
+
   const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
     try {
       const payloadLogin: AuthLoginRequest = data;
@@ -59,75 +62,78 @@ function Login() {
 
       const resUser = await axios.get(urlGetUser, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
       setCookie("user", JSON.stringify(resUser.data.data), 240);
 
       navigate.push("/jobs");
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      setError(e.response.data.error);
     }
   };
 
   return (
-    <Grid
-      container
-      spacing={0}
-      direction="column"
-      alignItems="center"
-      justifyContent="center"
-      sx={{ minHeight: "100vh" }}
-    >
-      <Card sx={{ minWidth: "800px", padding: "24px" }}>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Typography
-            variant="h4"
-            fontWeight="bold"
-            marginBottom="32px"
-            align="center"
-          >
-            Login
-          </Typography>
-          <Stack spacing={2}>
-            <Controller
-              name="email"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Email"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Controller
-              name="password"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  label="Password"
-                  type="password"
-                  error={!!error}
-                  helperText={error?.message}
-                />
-              )}
-            />
-            <Button
-              variant="contained"
-              size="large"
-              type="submit"
-              color="primary"
+    <>
+      {error && <Alert severity="error">{error}</Alert>}
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ minHeight: "100vh" }}
+      >
+        <Card sx={{ minWidth: "800px", padding: "24px" }}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Typography
+              variant="h4"
+              fontWeight="bold"
+              marginBottom="32px"
+              align="center"
             >
               Login
-            </Button>
-            <Button href="/auth/register">Register here</Button>
-          </Stack>
-        </form>
-      </Card>
-    </Grid>
+            </Typography>
+            <Stack spacing={2}>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    label="Email"
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                )}
+              />
+              <Controller
+                name="password"
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <TextField
+                    {...field}
+                    label="Password"
+                    type="password"
+                    error={!!error}
+                    helperText={error?.message}
+                  />
+                )}
+              />
+              <Button
+                variant="contained"
+                size="large"
+                type="submit"
+                color="primary"
+              >
+                Login
+              </Button>
+              <Button href="/auth/register">Register here</Button>
+            </Stack>
+          </form>
+        </Card>
+      </Grid>
+    </>
   );
 }
 

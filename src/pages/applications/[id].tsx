@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { IJobListDetail } from "../../interfaces/Job";
 import {
   Box,
   FormControlLabel,

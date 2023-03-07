@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { IJobListDetail } from "../../interfaces/Job";
+import { IJobDetailCandidate } from "../../interfaces/Job";
 import {
   Box,
   FormControlLabel,
@@ -23,16 +23,32 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
+import axios from "axios";
 
 function JobDetail() {
   const router = useRouter();
   const { id } = router.query;
 
   const [user, setUser] = useState<any | null>(null);
-  
+  const [data, setData] = useState([]);
+
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
+  }, []);
+
+  const getJobDetail = async () => {
+    try {
+      const url = "https://onboarding-backend.bosshire.online/jobs/${id}";
+      const res = await axios.get(url);
+      setData(res.data.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getJobDetail();
   }, []);
 
   let jobDetailContent;
@@ -78,7 +94,7 @@ function JobDetail() {
             >
               Job Title
             </Typography>
-            <Typography variant="h4">Software Engineer</Typography>
+            <Typography variant="h4">SDET</Typography>
           </Box>
           <Stack
             direction="row"
@@ -148,66 +164,6 @@ function JobDetail() {
               <CardContent>
                 <Typography variant="h5" fontWeight="bold" marginBottom="8px">
                   Ari Davis
-                </Typography>
-              </CardContent>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="body1" marginRight="12px">
-                  2023-01-01
-                </Typography>
-                <Typography variant="h6" fontWeight="bold">
-                  Interview
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  John Doe
-                </Typography>
-              </CardContent>
-              <CardContent
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="body1" marginRight="12px">
-                  2023-01-01
-                </Typography>
-                <Typography variant="h6" fontWeight="bold">
-                  Interview
-                </Typography>
-              </CardContent>
-            </Card>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  Ray
                 </Typography>
               </CardContent>
               <CardContent

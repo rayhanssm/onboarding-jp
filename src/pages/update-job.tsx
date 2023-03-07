@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -24,9 +24,15 @@ import {
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import Link from "next/link";
+import { ICreateJob } from "@/interfaces/Job";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { getCookie } from "@/services/cookie";
 
 function UpdateJob() {
-  const methods = useForm({
+  const navigate = useRouter();
+
+  const methods = useForm<ICreateJob>({
     resolver: yupResolver(
       yup.object().shape({
         title: yup
@@ -51,8 +57,28 @@ function UpdateJob() {
 
   const { control, handleSubmit, register } = methods;
 
-  const onSubmit = () => {
-    console.log();
+  const [token, setToken] = useState<any | null>(null);
+
+  useEffect(() => {
+    let token = getCookie("access_token");
+    setToken(token);
+    console.log(token);
+  }, []);
+
+  const onSubmit: SubmitHandler<ICreateJob> = async (data: ICreateJob) => {
+    try {
+      const payload: ICreateJob = data;
+      const url = "https://onboarding-backend.bosshire.online/jobs/{id}";
+      await axios.put(url, payload, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      navigate.push("/jobs");
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -64,7 +90,7 @@ function UpdateJob() {
               <Button color="inherit" component={Link} href="/jobs">
                 Jobs
               </Button>
-              <Button color="inherit" component={Link} href="/">
+              <Button color="inherit" component={Link} href="/applications">
                 Applications
               </Button>
             </Box>
@@ -114,7 +140,7 @@ function UpdateJob() {
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
-                name="openDate"
+                name="open_date"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
@@ -134,7 +160,7 @@ function UpdateJob() {
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
-                name="closeDate"
+                name="close_date"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker

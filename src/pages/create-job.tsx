@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
@@ -9,29 +9,17 @@ import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  Box,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
-  Stack,
-} from "@mui/material";
-import { Dayjs } from "dayjs";
+import { Box, TextField, Typography, Stack } from "@mui/material";
 import Link from "next/link";
 import { ICreateJob } from "@/interfaces/Job";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { getCookie } from "@/services/cookie";
 
 function CreateJob() {
   const navigate = useRouter();
 
-  const methods = useForm({
+  const methods = useForm<ICreateJob>({
     resolver: yupResolver(
       yup.object().shape({
         title: yup
@@ -41,36 +29,47 @@ function CreateJob() {
         description: yup
           .string()
           .required("Description is required")
-          .typeError("Title is required"),
-        openDate: yup
+          .typeError("Description is required"),
+        open_date: yup
           .date()
           .required("Open date is required")
           .typeError("Open date is required"),
-        closeDate: yup
+        close_date: yup
           .date()
           .required("Close date is required")
-          .typeError("Close date is required"),
+          .typeError("Close date is required")
+          .min(yup.ref("open_date"), "Close date must be after open date"),
       })
     ),
   });
 
   const { control, handleSubmit, setValue } = methods;
 
-  const onSubmit = () => {};
-  // const onSubmit: SubmitHandler<ICreateJob> = async (data: ICreateJob) => {
-  //   try {
-  //     const payload: ICreateJob = data;
-  //     const url = "https://onboarding-backend.bosshire.online/jobs";
-  //     await axios.post(url, payload, {
-  //       headers: {
-  //         AccessControlAllowOrigin: "*",
-  //       },
-  //     });
-  //     navigate.push("/jobs");
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const [token, setToken] = useState<any | null>(null);
+
+  useEffect(() => {
+    let token = getCookie("access_token");
+    setToken(token);
+    console.log(token);
+  }, []);
+
+  const onSubmit: SubmitHandler<ICreateJob> = async (data: ICreateJob) => {
+    try {
+      const payload: ICreateJob = data;
+      const url = "https://onboarding-backend.bosshire.online/jobs";
+
+      await axios.post(url, payload, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      navigate.push("/jobs");
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <>
@@ -131,7 +130,7 @@ function CreateJob() {
             />
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
-                name="openDate"
+                name="open_date"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
@@ -151,7 +150,7 @@ function CreateJob() {
             </LocalizationProvider>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <Controller
-                name="closeDate"
+                name="close_date"
                 control={control}
                 render={({ field, fieldState: { error } }) => (
                   <DatePicker
