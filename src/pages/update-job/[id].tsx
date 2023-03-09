@@ -21,6 +21,7 @@ import {
   FormHelperText,
   Checkbox,
   Stack,
+  Alert,
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import Link from "next/link";
@@ -30,7 +31,7 @@ import {
   IJobDetailCompany,
 } from "@/interfaces/Job";
 import axios from "axios";
-import { Router, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
 
 function UpdateJob() {
@@ -39,7 +40,6 @@ function UpdateJob() {
   const { id } = router.query;
 
   const methods = useForm<IFormJob>({
-    // defaultValues: new FormData(),
     resolver: yupResolver(
       yup.object().shape({
         title: yup
@@ -91,6 +91,8 @@ function UpdateJob() {
     getJobDetail();
   }, [id, token]);
 
+  const [error, setError] = useState("");
+
   const onSubmit: SubmitHandler<IFormJob> = async (data: IFormJob) => {
     console.log("I am here");
     try {
@@ -105,13 +107,14 @@ function UpdateJob() {
       });
 
       navigate.push("/jobs");
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      setError(e.response.data.error);
     }
   };
 
   return (
     <>
+      {error && <Alert severity="error">{error}</Alert>}
       <Box sx={{ flexGrow: 1 }} marginBottom="24px">
         <AppBar position="static">
           <Toolbar>

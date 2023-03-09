@@ -18,6 +18,8 @@ import { getCookie } from "@/services/cookie";
 
 function CreateJob() {
   const navigate = useRouter();
+  
+  const [token, setToken] = useState<any | null>(null);
 
   const methods = useForm<IFormJob>({
     resolver: yupResolver(
@@ -44,8 +46,6 @@ function CreateJob() {
   });
 
   const { control, handleSubmit, setValue } = methods;
-
-  const [token, setToken] = useState<any | null>(null);
 
   useEffect(() => {
     let token = getCookie("access_token");

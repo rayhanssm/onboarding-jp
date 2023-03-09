@@ -10,6 +10,7 @@ export interface IFormJob {
 export interface IJobList {
     id: number
     title: string
+    description: string
     application_count: number
     open_date: Date
     close_date: Date

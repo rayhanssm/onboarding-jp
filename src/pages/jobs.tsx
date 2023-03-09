@@ -26,14 +26,25 @@ import { getCookie } from "@/services/cookie";
 import axios from "axios";
 import { differenceInDays, format, subDays } from "date-fns";
 import { IGetUser } from "@/interfaces/Auth";
+import { useRouter } from "next/router";
 
 function JobListCandidate() {
+  const router = useRouter();
+  const { idJobs } = router.query;
+
   const [user, setUser] = useState<any | null>(null);
+  const [token, setToken] = useState<any | null>(null);
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
+  }, []);
+
+  useEffect(() => {
+    let token = getCookie("access_token");
+    setToken(token);
   }, []);
 
   const getJobs = async () => {
@@ -49,6 +60,21 @@ function JobListCandidate() {
   useEffect(() => {
     getJobs();
   }, []);
+
+  const onDelete = async () => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/jobs/${idJobs}`;
+      const res = await axios.delete(url, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(res.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   // const [page, setPage] = useState(1);
 
@@ -138,7 +164,11 @@ function JobListCandidate() {
                   >
                     {d.title}
                   </Typography>
-                  <Typography variant="body2" color="GrayText"marginBottom="8px">
+                  <Typography
+                    variant="body2"
+                    color="GrayText"
+                    marginBottom="8px"
+                  >
                     {d.company}
                   </Typography>
                   <Typography variant="body1" marginBottom="4px">
@@ -158,6 +188,7 @@ function JobListCandidate() {
                       size="large"
                       type="submit"
                       color="error"
+                      onClick={onDelete}
                     >
                       Delete
                     </Button>

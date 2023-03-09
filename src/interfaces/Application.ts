@@ -1,18 +1,10 @@
 export interface IApplicationsCompany {
     id: number
-    jobTitle: string
-    application_count: number
-    lastProcessDate: Date
-    lastStatus: Date
     candidate: string
+    last_process_date: Date,
+    last_status: Date
 }
 
 export interface IApplicationsCandidate {
-    id: number
-    jobTitle: string
-    application_count: number
-    lastProcessDate: Date
-    lastStatus: Date
-    company: string
+    
 }
-

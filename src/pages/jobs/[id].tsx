@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import {
+  IFormJob,
   IJobDetailCandidate,
   IJobDetailCompany,
   IJobList,
@@ -23,6 +24,7 @@ import {
   CardContent,
   CardActions,
   Pagination,
+  Alert,
 } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -30,6 +32,7 @@ import { getCookie } from "@/services/cookie";
 import axios from "axios";
 
 function JobDetail() {
+  const navigate = useRouter();
   const router = useRouter();
   const { id } = router.query;
 
@@ -71,21 +74,30 @@ function JobDetail() {
     getJobDetail();
   }, [id, token]);
 
-  const handleDelete = async () => {
+  const [error, setError] = useState("");
+
+  const onDelete = async () => {
     try {
       const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
-      const res = await axios.delete(url);
-      setDataCompany(res.data)
-    } catch (e) {
-      console.log(e)
+      const res = await axios.delete(url, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDataCompany(res.data);
+      navigate.push("/jobs");
+    } catch (e: any) {
+      setError(e.response.data.error);
     }
-  }
+  };
 
   let jobDetailContent;
 
   if (user && user.role === "Company") {
     jobDetailContent = (
       <>
+        {error && <Alert severity="error">{error}</Alert>}
         <Box sx={{ flexGrow: 1 }} marginBottom="24px">
           <AppBar position="static">
             <Toolbar>
@@ -147,7 +159,7 @@ function JobDetail() {
               size="large"
               type="submit"
               color="error"
-              // onClick={() => handleDelete(dataCompany)}
+              onClick={onDelete}
             >
               Delete
             </Button>
@@ -162,21 +174,7 @@ function JobDetail() {
           >
             Description
           </Typography>
-          <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-            dolore quia ratione maxime, quae totam impedit quis sapiente
-            recusandae necessitatibus repellendus? Voluptatum beatae
-            perspiciatis nesciunt eius voluptate sunt accusamus veniam, modi
-            necessitatibus. Aspernatur facere, nostrum atque repudiandae minus,
-            accusantium perspiciatis dolor inventore soluta aut quasi beatae.
-            Nobis maxime perspiciatis, architecto vitae laboriosam recusandae
-            inventore ea magni dolore corrupti tempore labore incidunt quam
-            deserunt eaque eveniet, provident sit a quos? Cupiditate unde
-            nostrum veniam nemo, vero suscipit consequatur asperiores minima
-            distinctio est tempore ducimus quisquam iure at deserunt animi eius.
-            Minima deserunt sapiente explicabo temporibus consectetur vitae
-            pariatur voluptatem, nam praesentium!
-          </Typography>
+          <Typography variant="body2">{dataCompany?.description}</Typography>
         </Box>
         <Box paddingX="32px">
           <Typography
@@ -188,41 +186,41 @@ function JobDetail() {
             Applications
           </Typography>
           {/* {dataCompany.map((d: IJobDetailCompany) => ( */}
-            <Grid item xs={12}>
-              <Card
-                // component={Link}
-                // href={"applications/" + d.id}
+          <Grid item xs={12}>
+            <Card
+              // component={Link}
+              // href={"applications/" + d.id}
+              sx={{
+                padding: "8px",
+                marginX: "8px",
+                marginY: "16px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                textDecoration: "none",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                  John Doe
+                </Typography>
+              </CardContent>
+              <CardContent
                 sx={{
-                  padding: "8px",
-                  marginX: "8px",
-                  marginY: "16px",
                   display: "flex",
-                  justifyContent: "space-between",
+                  justifyContent: "flex-end",
                   alignItems: "center",
-                  textDecoration: "none",
                 }}
               >
-                <CardContent>
-                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                    Ari Davis
-                  </Typography>
-                </CardContent>
-                <CardContent
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                  }}
-                >
-                  <Typography variant="body1" marginRight="12px">
-                    2023-01-01
-                  </Typography>
-                  <Typography variant="h6" fontWeight="bold">
-                    Interview
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+                <Typography variant="body1" marginRight="12px">
+                  2023-01-01
+                </Typography>
+                <Typography variant="h6" fontWeight="bold">
+                  Interview
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
           {/* ))} */}
         </Box>
       </>
@@ -280,20 +278,7 @@ function JobDetail() {
           >
             Description
           </Typography>
-          <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui facere
-            magnam non ducimus, explicabo nesciunt ipsa perspiciatis. Commodi
-            possimus ab reprehenderit eaque soluta! Laudantium veritatis libero
-            quaerat necessitatibus aliquam expedita veniam, ex eaque fugit
-            voluptatum esse voluptates voluptas quo sequi rerum minus sed fuga,
-            exercitationem ullam excepturi cupiditate impedit, eligendi quae?
-            Sapiente aliquid dolor eum, magni tempore suscipit similique saepe
-            ad quidem praesentium sit autem qui fuga obcaecati nam culpa
-            aspernatur quaerat voluptatum, soluta, maxime amet eligendi.
-            Reiciendis saepe, maiores voluptatem nihil, rem expedita adipisci
-            beatae velit vel commodi voluptatibus hic non. Dolores culpa nobis
-            delectus deserunt dolore accusantium tenetur!
-          </Typography>
+          <Typography variant="body2">{dataCandidate?.description}</Typography>
         </Box>
         <Box paddingX="32px" marginBottom="24px">
           <Button
