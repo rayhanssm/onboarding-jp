@@ -85,8 +85,8 @@ function JobDetail() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setDataCompany(res.data);
       navigate.push("/jobs");
+
     } catch (e: any) {
       setError(e.response.data.error);
     }

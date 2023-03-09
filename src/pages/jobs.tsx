@@ -24,13 +24,12 @@ import {
 import Link from "next/link";
 import { getCookie } from "@/services/cookie";
 import axios from "axios";
-import { differenceInDays, format, subDays } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { IGetUser } from "@/interfaces/Auth";
 import { useRouter } from "next/router";
 
 function JobListCandidate() {
-  const router = useRouter();
-  const { idJobs } = router.query;
+  const navigate = useRouter();
 
   const [user, setUser] = useState<any | null>(null);
   const [token, setToken] = useState<any | null>(null);
@@ -61,16 +60,16 @@ function JobListCandidate() {
     getJobs();
   }, []);
 
-  const onDelete = async () => {
+  const onDelete = async (id: number) => {
     try {
-      const url = `https://onboarding-backend.bosshire.online/jobs/${idJobs}`;
+      const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
       const res = await axios.delete(url, {
         headers: {
           AccessControlAllowOrigin: "*",
           Authorization: `Bearer ${token}`,
         },
       });
-      setData(res.data);
+      getJobs();
     } catch (e) {
       console.log(e);
     }
@@ -151,13 +150,13 @@ function JobListCandidate() {
                     variant="h5"
                     fontWeight="bold"
                     marginBottom="8px"
-                    color="inherit"
+                    color="primary"
                     component={Link}
                     href={"jobs/" + d.id}
                     sx={{
                       ":hover": {
-                        color: "blue",
-                        transition: "0.5s",
+                        color: "darkblue",
+                        transition: "0.2s",
                       },
                       textDecoration: "none",
                     }}
@@ -188,7 +187,7 @@ function JobListCandidate() {
                       size="large"
                       type="submit"
                       color="error"
-                      onClick={onDelete}
+                      onClick={() => onDelete(d.id)}
                     >
                       Delete
                     </Button>

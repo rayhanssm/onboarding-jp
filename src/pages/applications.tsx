@@ -36,7 +36,7 @@ import { getCookie } from "@/services/cookie";
 
 function Applications() {
   const [user, setUser] = useState<any | null>(null);
-  
+
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
@@ -118,11 +118,9 @@ function Applications() {
         </Stack>
         <Grid item xs={12}>
           <Card
-            component={Link}
-            href={"applications/" + id}
             sx={{
               padding: "8px",
-              marginX: "8px",
+              marginX: "32px",
               marginY: "16px",
               display: "flex",
               justifyContent: "space-between",
@@ -135,6 +133,15 @@ function Applications() {
                 fontWeight="bold"
                 marginBottom="8px"
                 color="primary"
+                component={Link}
+                href={"applications/" + id}
+                sx={{
+                      ":hover": {
+                        color: "darkblue",
+                        transition: "0.2s",
+                      },
+                      textDecoration: "none",
+                    }}
               >
                 Software Engineer
               </Typography>
