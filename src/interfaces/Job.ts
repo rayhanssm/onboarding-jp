@@ -1,4 +1,6 @@
-export interface ICreateJob {
+import { IApplicationsCandidate } from "./Application"
+
+export interface IFormJob {
     title: string
     description: string
     open_date: Date
@@ -14,12 +16,10 @@ export interface IJobList {
     company: string
 }
 
-export interface IJobDetailCandidate extends IJobList{
-
+export interface IJobDetailCandidate extends IJobList {
+    id: number;
 }
 
-export interface IJobDetailCompany {
-
+export interface IJobDetailCompany extends IJobList, IApplicationsCandidate{
+    id: number;
 }
-
-

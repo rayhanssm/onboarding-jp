@@ -19,11 +19,13 @@ import {
   CardContent,
   CardActions,
   Pagination,
+  Autocomplete,
 } from "@mui/material";
 import Link from "next/link";
 import { getCookie } from "@/services/cookie";
 import axios from "axios";
 import { differenceInDays, format, subDays } from "date-fns";
+import { IGetUser } from "@/interfaces/Auth";
 
 function JobListCandidate() {
   const [user, setUser] = useState<any | null>(null);
@@ -48,11 +50,13 @@ function JobListCandidate() {
     getJobs();
   }, []);
 
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
 
   // const handlePageChange = (e, value) => {
   //   setPage(value);
   // };
+
+  console.log(data);
 
   let jobContent;
 
@@ -101,27 +105,41 @@ function JobListCandidate() {
             color="success"
             component={Link}
             href="/create-job"
-            sx={{ marginX: "8px" }}
+            sx={{ marginX: "32px" }}
           >
             Create Job
           </Button>
           {data.map((d: IJobList) => (
             <Grid key={d.id} item xs={12}>
               <Card
-                component={Link}
-                href={"jobs/" + d.id}
                 sx={{
                   padding: "8px",
-                  marginX: "8px",
+                  marginX: "32px",
                   marginY: "16px",
                   display: "flex",
                   justifyContent: "space-between",
-                  textDecoration: "none",
                 }}
               >
                 <CardContent>
-                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                  <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    marginBottom="8px"
+                    color="inherit"
+                    component={Link}
+                    href={"jobs/" + d.id}
+                    sx={{
+                      ":hover": {
+                        color: "blue",
+                        transition: "0.5s",
+                      },
+                      textDecoration: "none",
+                    }}
+                  >
                     {d.title}
+                  </Typography>
+                  <Typography variant="body2" color="GrayText"marginBottom="8px">
+                    {d.company}
                   </Typography>
                   <Typography variant="body1" marginBottom="4px">
                     {format(new Date(d.open_date), "yyyy-MM-dd")} until{" "}

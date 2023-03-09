@@ -77,7 +77,7 @@ function ApplicationDetail() {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          paddingX="8px"
+          paddingX="32px"
           marginBottom="24px"
         >
           <Box>
@@ -121,7 +121,7 @@ function ApplicationDetail() {
             <MenuItem onClick={handleClose}>Passed</MenuItem>
           </Menu>
         </Box>
-        <Box paddingX="8px" marginBottom="32px">
+        <Box paddingX="32px" marginBottom="32px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -132,7 +132,7 @@ function ApplicationDetail() {
           </Typography>
           <Typography variant="h4">Ari Davis</Typography>
         </Box>
-        <Box paddingX="8px" marginBottom="32px">
+        <Box paddingX="32px" marginBottom="32px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -150,7 +150,7 @@ function ApplicationDetail() {
             officiis reiciendis earum? Similique consectetur iusto quam.
           </Typography>
         </Box>
-        <Box paddingX="8px">
+        <Box paddingX="32px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -250,7 +250,7 @@ function ApplicationDetail() {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          paddingX="8px"
+          paddingX="32px"
           marginBottom="24px"
         >
           <Box>
@@ -292,7 +292,7 @@ function ApplicationDetail() {
             <MenuItem onClick={handleClose}>Cancelled</MenuItem>
           </Menu>
         </Box>
-        <Box paddingX="8px" marginBottom="32px">
+        <Box paddingX="32px" marginBottom="32px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -303,7 +303,7 @@ function ApplicationDetail() {
           </Typography>
           <Typography variant="h4">BOSSHIRE</Typography>
         </Box>
-        <Box paddingX="8px" marginBottom="32px">
+        <Box paddingX="32px" marginBottom="32px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -321,7 +321,7 @@ function ApplicationDetail() {
             officiis reiciendis earum? Similique consectetur iusto quam.
           </Typography>
         </Box>
-        <Box paddingX="8px">
+        <Box paddingX="32px">
           <Typography
             variant="h6"
             fontWeight="bold"

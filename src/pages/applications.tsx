@@ -105,12 +105,12 @@ function Applications() {
                 label="Application status"
                 onChange={handleChange}
               >
-                <MenuItem value={10}>Applied</MenuItem>
-                <MenuItem value={20}>HR Interview</MenuItem>
-                <MenuItem value={30}>Client Interview</MenuItem>
-                <MenuItem value={30}>Passed</MenuItem>
-                <MenuItem value={30}>Rejected</MenuItem>
-                <MenuItem value={30}>Cancelled</MenuItem>
+                <MenuItem>Applied</MenuItem>
+                <MenuItem>HR Interview</MenuItem>
+                <MenuItem>Client Interview</MenuItem>
+                <MenuItem>Passed</MenuItem>
+                <MenuItem>Rejected</MenuItem>
+                <MenuItem>Cancelled</MenuItem>
               </Select>
             </FormControl>
           </Box>

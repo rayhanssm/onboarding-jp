@@ -24,15 +24,22 @@ import {
 } from "@mui/material";
 import { Dayjs } from "dayjs";
 import Link from "next/link";
-import { ICreateJob } from "@/interfaces/Job";
+import {
+  IFormJob,
+  IJobDetailCandidate,
+  IJobDetailCompany,
+} from "@/interfaces/Job";
 import axios from "axios";
-import { useRouter } from "next/router";
+import { Router, useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
 
 function UpdateJob() {
   const navigate = useRouter();
+  const router = useRouter();
+  const { id } = router.query;
 
-  const methods = useForm<ICreateJob>({
+  const methods = useForm<IFormJob>({
+    // defaultValues: new FormData(),
     resolver: yupResolver(
       yup.object().shape({
         title: yup
@@ -42,12 +49,12 @@ function UpdateJob() {
         description: yup
           .string()
           .required("Description is required")
-          .typeError("Title is required"),
-        openDate: yup
+          .typeError("Description is required"),
+        open_date: yup
           .date()
           .required("Open date is required")
           .typeError("Open date is required"),
-        closeDate: yup
+        close_date: yup
           .date()
           .required("Close date is required")
           .typeError("Close date is required"),
@@ -55,7 +62,7 @@ function UpdateJob() {
     ),
   });
 
-  const { control, handleSubmit, register } = methods;
+  const { control, handleSubmit, reset } = methods;
 
   const [token, setToken] = useState<any | null>(null);
 
@@ -65,16 +72,38 @@ function UpdateJob() {
     console.log(token);
   }, []);
 
-  const onSubmit: SubmitHandler<ICreateJob> = async (data: ICreateJob) => {
+  const getJobDetail = async () => {
     try {
-      const payload: ICreateJob = data;
-      const url = "https://onboarding-backend.bosshire.online/jobs/{id}";
+      const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      reset(res.data.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!id || !token) return;
+    getJobDetail();
+  }, [id, token]);
+
+  const onSubmit: SubmitHandler<IFormJob> = async (data: IFormJob) => {
+    console.log("I am here");
+    try {
+      const payload: IFormJob = data;
+      const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
+
       await axios.put(url, payload, {
         headers: {
           AccessControlAllowOrigin: "*",
           Authorization: `Bearer ${token}`,
         },
       });
+
       navigate.push("/jobs");
     } catch (e) {
       console.log(e);
@@ -118,6 +147,7 @@ function UpdateJob() {
                 <TextField
                   {...field}
                   label="Title"
+                  value={field.value}
                   error={!!error}
                   helperText={error?.message}
                 />
@@ -133,6 +163,7 @@ function UpdateJob() {
                   multiline
                   rows={4}
                   maxRows={10}
+                  value={field.value}
                   error={!!error}
                   helperText={error?.message}
                 />
@@ -147,6 +178,7 @@ function UpdateJob() {
                     {...field}
                     label="Open Date"
                     inputFormat="DD/MM/YYYY"
+                    value={field.value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -167,6 +199,7 @@ function UpdateJob() {
                     {...field}
                     label="Close Date"
                     inputFormat="DD/MM/YYYY"
+                    value={field.value}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -181,7 +214,7 @@ function UpdateJob() {
             <Button
               variant="contained"
               size="large"
-              type="submit"
+              type={"submit"}
               color="primary"
             >
               Update Job

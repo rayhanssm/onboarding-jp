@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
-import { IJobDetailCandidate } from "../../interfaces/Job";
+import {
+  IJobDetailCandidate,
+  IJobDetailCompany,
+  IJobList,
+} from "../../interfaces/Job";
 import {
   Box,
   FormControlLabel,
@@ -30,26 +34,52 @@ function JobDetail() {
   const { id } = router.query;
 
   const [user, setUser] = useState<any | null>(null);
-  const [data, setData] = useState([]);
+  const [token, setToken] = useState<any | null>(null);
+  const [dataCompany, setDataCompany] = useState<IJobDetailCompany | null>(
+    null
+  );
+  const [dataCandidate, setDataCandidate] =
+    useState<IJobDetailCandidate | null>(null);
 
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
   }, []);
 
+  useEffect(() => {
+    let token = getCookie("access_token");
+    setToken(token);
+  }, []);
+
   const getJobDetail = async () => {
     try {
-      const url = "https://onboarding-backend.bosshire.online/jobs/${id}";
-      const res = await axios.get(url);
-      setData(res.data.data);
+      const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDataCompany(res.data.data);
+      setDataCandidate(res.data.data);
     } catch (e) {
       console.log(e);
     }
   };
 
   useEffect(() => {
+    if (!id || !token) return;
     getJobDetail();
-  }, []);
+  }, [id, token]);
+
+  const handleDelete = async () => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
+      const res = await axios.delete(url);
+      setDataCompany(res.data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   let jobDetailContent;
 
@@ -82,7 +112,7 @@ function JobDetail() {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          paddingX="8px"
+          paddingX="32px"
           marginBottom="24px"
         >
           <Box>
@@ -94,7 +124,7 @@ function JobDetail() {
             >
               Job Title
             </Typography>
-            <Typography variant="h4">SDET</Typography>
+            <Typography variant="h4">{dataCompany?.title}</Typography>
           </Box>
           <Stack
             direction="row"
@@ -108,7 +138,7 @@ function JobDetail() {
               type="submit"
               color="warning"
               component={Link}
-              href="/update-job"
+              href={"../update-job/" + dataCompany?.id}
             >
               Update
             </Button>
@@ -117,12 +147,13 @@ function JobDetail() {
               size="large"
               type="submit"
               color="error"
+              // onClick={() => handleDelete(dataCompany)}
             >
               Delete
             </Button>
           </Stack>
         </Box>
-        <Box paddingX="8px" marginBottom="24px">
+        <Box paddingX="32px" marginBottom="24px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -132,15 +163,22 @@ function JobDetail() {
             Description
           </Typography>
           <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Necessitatibus, dignissimos ad odio consectetur, repellat sint vitae
-            nesciunt minima, hic ut dolores. Ipsum facilis alias qui autem,
-            debitis totam unde porro iure eius. Dolores, architecto in,
-            provident eius est magnam magni optio consectetur fugiat laborum
-            officiis blanditiis explicabo ea, error molestiae!
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
+            dolore quia ratione maxime, quae totam impedit quis sapiente
+            recusandae necessitatibus repellendus? Voluptatum beatae
+            perspiciatis nesciunt eius voluptate sunt accusamus veniam, modi
+            necessitatibus. Aspernatur facere, nostrum atque repudiandae minus,
+            accusantium perspiciatis dolor inventore soluta aut quasi beatae.
+            Nobis maxime perspiciatis, architecto vitae laboriosam recusandae
+            inventore ea magni dolore corrupti tempore labore incidunt quam
+            deserunt eaque eveniet, provident sit a quos? Cupiditate unde
+            nostrum veniam nemo, vero suscipit consequatur asperiores minima
+            distinctio est tempore ducimus quisquam iure at deserunt animi eius.
+            Minima deserunt sapiente explicabo temporibus consectetur vitae
+            pariatur voluptatem, nam praesentium!
           </Typography>
         </Box>
-        <Box paddingX="8px">
+        <Box paddingX="32px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -149,39 +187,43 @@ function JobDetail() {
           >
             Applications
           </Typography>
-          <Grid item xs={12}>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  Ari Davis
-                </Typography>
-              </CardContent>
-              <CardContent
+          {/* {dataCompany.map((d: IJobDetailCompany) => ( */}
+            <Grid item xs={12}>
+              <Card
+                // component={Link}
+                // href={"applications/" + d.id}
                 sx={{
+                  padding: "8px",
+                  marginX: "8px",
+                  marginY: "16px",
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: "space-between",
                   alignItems: "center",
+                  textDecoration: "none",
                 }}
               >
-                <Typography variant="body1" marginRight="12px">
-                  2023-01-01
-                </Typography>
-                <Typography variant="h6" fontWeight="bold">
-                  Interview
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+                <CardContent>
+                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                    Ari Davis
+                  </Typography>
+                </CardContent>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body1" marginRight="12px">
+                    2023-01-01
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    Interview
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          {/* ))} */}
         </Box>
       </>
     );
@@ -214,7 +256,7 @@ function JobDetail() {
           display="flex"
           justifyContent="space-between"
           alignItems="center"
-          paddingX="8px"
+          paddingX="32px"
           marginBottom="24px"
         >
           <Box>
@@ -226,10 +268,10 @@ function JobDetail() {
             >
               Job Title
             </Typography>
-            <Typography variant="h4">Software Engineer</Typography>
+            <Typography variant="h4">{dataCandidate?.title}</Typography>
           </Box>
         </Box>
-        <Box paddingX="8px" marginBottom="24px">
+        <Box paddingX="32px" marginBottom="24px">
           <Typography
             variant="h6"
             fontWeight="bold"
@@ -239,15 +281,21 @@ function JobDetail() {
             Description
           </Typography>
           <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Necessitatibus, dignissimos ad odio consectetur, repellat sint vitae
-            nesciunt minima, hic ut dolores. Ipsum facilis alias qui autem,
-            debitis totam unde porro iure eius. Dolores, architecto in,
-            provident eius est magnam magni optio consectetur fugiat laborum
-            officiis blanditiis explicabo ea, error molestiae!
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui facere
+            magnam non ducimus, explicabo nesciunt ipsa perspiciatis. Commodi
+            possimus ab reprehenderit eaque soluta! Laudantium veritatis libero
+            quaerat necessitatibus aliquam expedita veniam, ex eaque fugit
+            voluptatum esse voluptates voluptas quo sequi rerum minus sed fuga,
+            exercitationem ullam excepturi cupiditate impedit, eligendi quae?
+            Sapiente aliquid dolor eum, magni tempore suscipit similique saepe
+            ad quidem praesentium sit autem qui fuga obcaecati nam culpa
+            aspernatur quaerat voluptatum, soluta, maxime amet eligendi.
+            Reiciendis saepe, maiores voluptatem nihil, rem expedita adipisci
+            beatae velit vel commodi voluptatibus hic non. Dolores culpa nobis
+            delectus deserunt dolore accusantium tenetur!
           </Typography>
         </Box>
-        <Box paddingX="8px" marginBottom="24px">
+        <Box paddingX="32px" marginBottom="24px">
           <Button
             variant="contained"
             size="large"

@@ -11,7 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Box, TextField, Typography, Stack } from "@mui/material";
 import Link from "next/link";
-import { ICreateJob } from "@/interfaces/Job";
+import { IFormJob } from "@/interfaces/Job";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
@@ -19,7 +19,7 @@ import { getCookie } from "@/services/cookie";
 function CreateJob() {
   const navigate = useRouter();
 
-  const methods = useForm<ICreateJob>({
+  const methods = useForm<IFormJob>({
     resolver: yupResolver(
       yup.object().shape({
         title: yup
@@ -53,9 +53,9 @@ function CreateJob() {
     console.log(token);
   }, []);
 
-  const onSubmit: SubmitHandler<ICreateJob> = async (data: ICreateJob) => {
+  const onSubmit: SubmitHandler<IFormJob> = async (data: IFormJob) => {
     try {
-      const payload: ICreateJob = data;
+      const payload: IFormJob = data;
       const url = "https://onboarding-backend.bosshire.online/jobs";
 
       await axios.post(url, payload, {
