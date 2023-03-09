@@ -4,15 +4,9 @@ import Toolbar from "@mui/material/Toolbar";
 import { IJobList } from "../interfaces/Job";
 import {
   Box,
-  FormControlLabel,
   Grid,
   TextField,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
   Button,
   Stack,
   Card,
@@ -25,7 +19,6 @@ import Link from "next/link";
 import { getCookie } from "@/services/cookie";
 import axios from "axios";
 import { differenceInDays, format } from "date-fns";
-import { IGetUser } from "@/interfaces/Auth";
 import { useRouter } from "next/router";
 
 function JobListCandidate() {
@@ -149,7 +142,6 @@ function JobListCandidate() {
                   <Typography
                     variant="h5"
                     fontWeight="bold"
-                    marginBottom="8px"
                     color="primary"
                     component={Link}
                     href={"jobs/" + d.id}
@@ -163,11 +155,7 @@ function JobListCandidate() {
                   >
                     {d.title}
                   </Typography>
-                  <Typography
-                    variant="body2"
-                    color="GrayText"
-                    marginBottom="8px"
-                  >
+                  <Typography variant="body1" color="GrayText" marginY="8px">
                     {d.company}
                   </Typography>
                   <Typography variant="body1" marginBottom="4px">
@@ -241,15 +229,29 @@ function JobListCandidate() {
         </Stack>
         <Grid container>
           {data.map((d: IJobList) => (
-            <Grid key={d.id} item xs={4}>
+            <Grid key={d.id} item xs={4} marginTop="8px">
               <Card sx={{ padding: "8px", marginX: "8px", marginY: "16px" }}>
                 <CardContent>
-                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                  <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    color="primary"
+                    component={Link}
+                    href={"jobs/" + d.id}
+                    sx={{
+                      ":hover": {
+                        color: "darkblue",
+                        transition: "0.2s",
+                      },
+                      textDecoration: "none",
+                    }}
+                  >
                     {d.title}
                   </Typography>
                   <Typography
                     variant="body2"
                     color="GrayText"
+                    marginTop="8px"
                     marginBottom="4px"
                   >
                     {d.application_count} Applicants

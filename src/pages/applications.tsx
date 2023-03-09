@@ -136,16 +136,16 @@ function Applications() {
                 component={Link}
                 href={"applications/" + id}
                 sx={{
-                      ":hover": {
-                        color: "darkblue",
-                        transition: "0.2s",
-                      },
-                      textDecoration: "none",
-                    }}
+                  ":hover": {
+                    color: "darkblue",
+                    transition: "0.2s",
+                  },
+                  textDecoration: "none",
+                }}
               >
                 Software Engineer
               </Typography>
-              <Typography variant="h6" marginBottom="4px">
+              <Typography variant="body1" marginBottom="4px">
                 Ari Davis
               </Typography>
             </CardContent>
@@ -247,8 +247,6 @@ function Applications() {
         </Stack>
         <Grid item xs={12}>
           <Card
-            component={Link}
-            href={"applications/" + id}
             sx={{
               padding: "8px",
               marginX: "8px",
@@ -264,10 +262,19 @@ function Applications() {
                 fontWeight="bold"
                 marginBottom="8px"
                 color="primary"
+                component={Link}
+                href={"applications/" + id}
+                sx={{
+                  ":hover": {
+                    color: "darkblue",
+                    transition: "0.2s",
+                  },
+                  textDecoration: "none",
+                }}
               >
                 Software Engineer
               </Typography>
-              <Typography variant="h6" marginBottom="4px">
+              <Typography variant="body1" marginBottom="4px">
                 BOSSHIRE
               </Typography>
             </CardContent>

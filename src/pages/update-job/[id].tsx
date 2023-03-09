@@ -94,7 +94,6 @@ function UpdateJob() {
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<IFormJob> = async (data: IFormJob) => {
-    console.log("I am here");
     try {
       const payload: IFormJob = data;
       const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
@@ -105,7 +104,6 @@ function UpdateJob() {
           Authorization: `Bearer ${token}`,
         },
       });
-
       navigate.push("/jobs");
     } catch (e: any) {
       setError(e.response.data.error);

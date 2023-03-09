@@ -48,6 +48,7 @@ function Login() {
 
   const { control, handleSubmit } = methods;
 
+  const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
