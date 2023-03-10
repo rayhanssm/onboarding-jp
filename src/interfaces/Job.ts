@@ -1,4 +1,4 @@
-import { IApplicationsCandidate } from "./Application"
+import { IApplicationsCompany } from "./Application"
 
 export interface IFormJob {
     title: string
@@ -21,6 +21,6 @@ export interface IJobDetailCandidate extends IJobList {
     id: number;
 }
 
-export interface IJobDetailCompany extends IJobList, IApplicationsCandidate{
+export interface IJobDetailCompany extends IJobList, IApplicationsCompany{
     id: number;
 }

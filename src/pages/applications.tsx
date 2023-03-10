@@ -36,6 +36,7 @@ import { getCookie } from "@/services/cookie";
 
 function Applications() {
   const [user, setUser] = useState<any | null>(null);
+  const [token, setToken] = useState<any | null>(null);
 
   useEffect(() => {
     let getUser = getCookie("user");

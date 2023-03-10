@@ -11,24 +11,14 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   Box,
-  FormControlLabel,
-  Grid,
   TextField,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
   Stack,
   Alert,
 } from "@mui/material";
-import { Dayjs } from "dayjs";
 import Link from "next/link";
 import {
   IFormJob,
-  IJobDetailCandidate,
-  IJobDetailCompany,
 } from "@/interfaces/Job";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -44,20 +34,17 @@ function UpdateJob() {
       yup.object().shape({
         title: yup
           .string()
-          .required("Title is required")
-          .typeError("Title is required"),
+          .required("Title is required"),
         description: yup
           .string()
-          .required("Description is required")
-          .typeError("Description is required"),
+          .required("Description is required"),
         open_date: yup
           .date()
-          .required("Open date is required")
-          .typeError("Open date is required"),
+          .required("Open date is required"),
         close_date: yup
           .date()
           .required("Close date is required")
-          .typeError("Close date is required"),
+          .min(yup.ref("open_date"), "Close date must be after open date"),
       })
     ),
   });

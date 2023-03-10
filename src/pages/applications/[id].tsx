@@ -3,20 +3,11 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import {
   Box,
-  FormControlLabel,
   Grid,
-  TextField,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
   Button,
-  Stack,
   Card,
   CardContent,
-  CardActions,
   Pagination,
   Menu,
   MenuItem,
@@ -167,6 +158,7 @@ function ApplicationDetail() {
                 marginY: "16px",
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
                 textDecoration: "none",
               }}
             >
@@ -186,6 +178,7 @@ function ApplicationDetail() {
                 marginY: "16px",
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
                 textDecoration: "none",
               }}
             >
@@ -205,6 +198,7 @@ function ApplicationDetail() {
                 marginY: "16px",
                 display: "flex",
                 justifyContent: "space-between",
+                alignItems: "center",
                 textDecoration: "none",
               }}
             >

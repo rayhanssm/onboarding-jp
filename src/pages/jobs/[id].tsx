@@ -79,7 +79,7 @@ function JobDetail() {
   const onDelete = async () => {
     try {
       const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
-      const res = await axios.delete(url, {
+      await axios.delete(url, {
         headers: {
           AccessControlAllowOrigin: "*",
           Authorization: `Bearer ${token}`,

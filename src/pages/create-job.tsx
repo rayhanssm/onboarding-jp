@@ -26,26 +26,22 @@ function CreateJob() {
       yup.object().shape({
         title: yup
           .string()
-          .required("Title is required")
-          .typeError("Title is required"),
+          .required("Title is required"),
         description: yup
           .string()
-          .required("Description is required")
-          .typeError("Description is required"),
+          .required("Description is required"),
         open_date: yup
           .date()
-          .required("Open date is required")
-          .typeError("Open date is required"),
+          .required("Open date is required"),
         close_date: yup
           .date()
           .required("Close date is required")
-          .typeError("Close date is required")
           .min(yup.ref("open_date"), "Close date must be after open date"),
       })
     ),
   });
 
-  const { control, handleSubmit, setValue } = methods;
+  const { control, handleSubmit } = methods;
 
   useEffect(() => {
     let token = getCookie("access_token");

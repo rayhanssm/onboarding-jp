@@ -5,19 +5,13 @@ import { useForm, Controller, SubmitHandler } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import {
-  Box,
   FormControlLabel,
   Grid,
   TextField,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
   Checkbox,
   Stack,
 } from "@mui/material";
-import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
 import { AuthRegisterRequest, IFormRegister } from "../../interfaces/Auth";

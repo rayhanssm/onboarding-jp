@@ -22,8 +22,6 @@ import { differenceInDays, format } from "date-fns";
 import { useRouter } from "next/router";
 
 function JobListCandidate() {
-  const navigate = useRouter();
-
   const [user, setUser] = useState<any | null>(null);
   const [token, setToken] = useState<any | null>(null);
 
@@ -56,7 +54,7 @@ function JobListCandidate() {
   const onDelete = async (id: number) => {
     try {
       const url = `https://onboarding-backend.bosshire.online/jobs/${id}`;
-      const res = await axios.delete(url, {
+      await axios.delete(url, {
         headers: {
           AccessControlAllowOrigin: "*",
           Authorization: `Bearer ${token}`,
@@ -155,9 +153,6 @@ function JobListCandidate() {
                   >
                     {d.title}
                   </Typography>
-                  <Typography variant="body1" color="GrayText" marginY="8px">
-                    {d.company}
-                  </Typography>
                   <Typography variant="body1" marginBottom="4px">
                     {format(new Date(d.open_date), "yyyy-MM-dd")} until{" "}
                     {format(new Date(d.close_date), "yyyy-MM-dd")}
@@ -247,6 +242,9 @@ function JobListCandidate() {
                     }}
                   >
                     {d.title}
+                  </Typography>
+                  <Typography variant="body1" color="GrayText" marginY="8px">
+                    {d.company}
                   </Typography>
                   <Typography
                     variant="body2"

@@ -4,22 +4,7 @@ import Card from "@mui/material/Card";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import {
-  Box,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
-  Stack,
-  Snackbar,
-  Alert,
-  IconButton,
-} from "@mui/material";
+import { Grid, TextField, Typography, Stack, Alert } from "@mui/material";
 import Link from "next/link";
 import axios from "axios";
 import { AuthLoginRequest, IFormLogin, IGetUser } from "../../interfaces/Auth";
