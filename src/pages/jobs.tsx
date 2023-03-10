@@ -25,6 +25,7 @@ function JobListCandidate() {
   const [user, setUser] = useState<any | null>(null);
   const [token, setToken] = useState<any | null>(null);
 
+  const [input, setInput] = useState("");
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -40,8 +41,13 @@ function JobListCandidate() {
   const getJobs = async () => {
     try {
       const url = "https://onboarding-backend.bosshire.online/jobs";
-      const res = await axios.get(url);
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setData(res.data.data);
+      // return res.data.data
     } catch (e) {
       console.log(e);
     }
@@ -49,7 +55,13 @@ function JobListCandidate() {
 
   useEffect(() => {
     getJobs();
-  }, []);
+    // .then(res=>setData(res));
+  }, [token]);
+
+  // const handleInput = (e) => {
+  //   console.log(e.target.value);
+  //   setInput(e.target.value.toLowerCase());
+  // };
 
   const onDelete = async (id: number) => {
     try {
