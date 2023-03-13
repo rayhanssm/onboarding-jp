@@ -16,23 +16,64 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
+import axios from "axios";
+import {
+  IApplicationsDetailCandidate,
+  IApplicationsDetailCompany,
+} from "@/interfaces/Application";
+import { format } from "date-fns";
 
 function ApplicationDetail() {
   const router = useRouter();
   const { id } = router.query;
 
   const [user, setUser] = useState<any | null>(null);
+  const [token, setToken] = useState<any | null>(null);
+
+  const [dataCompany, setDataCompany] =
+    useState<IApplicationsDetailCompany | null>(null);
+  const [dataCandidate, setDataCandidate] =
+    useState<IApplicationsDetailCandidate | null>(null);
+  const [dataProcess, setDataProcess] =
+    useState<IApplicationsDetailCompany | null>(null);
 
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
   }, []);
 
+  useEffect(() => {
+    let token = getCookie("access_token");
+    setToken(token);
+  }, []);
+
+  const getApplicantDetail = async () => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/applications/${id}`;
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setDataCompany(res.data);
+      setDataCandidate(res.data);
+      setDataProcess(res.data.processes);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!id || !token) return;
+    getApplicantDetail();
+  }, [id, token]);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -80,7 +121,7 @@ function ApplicationDetail() {
             >
               Job Title
             </Typography>
-            <Typography variant="h4">Software Engineer</Typography>
+            <Typography variant="h4">{dataCompany?.job_title}</Typography>
           </Box>
           <Button
             id="button"
@@ -121,25 +162,7 @@ function ApplicationDetail() {
           >
             Candidate
           </Typography>
-          <Typography variant="h4">Ari Davis</Typography>
-        </Box>
-        <Box paddingX="32px" marginBottom="32px">
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            color="primary"
-            marginBottom="4px"
-          >
-            Description
-          </Typography>
-          <Typography variant="body1" marginBottom="4px">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
-            porro sunt similique vero ut reprehenderit voluptatem aliquam
-            suscipit. Doloribus rem ut cumque, excepturi mollitia incidunt
-            labore, nulla eius commodi asperiores et quam fugit enim officia
-            quaerat hic fugiat delectus aut, laboriosam autem consequatur
-            officiis reiciendis earum? Similique consectetur iusto quam.
-          </Typography>
+          <Typography variant="h4">{dataCompany?.candidate}</Typography>
         </Box>
         <Box paddingX="32px">
           <Typography
@@ -150,68 +173,34 @@ function ApplicationDetail() {
           >
             Application Process
           </Typography>
-          <Grid item xs={12}>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  Interview
-                </Typography>
-              </CardContent>
-              <CardContent sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Typography variant="body1">2023-01-01</Typography>
-              </CardContent>
-            </Card>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  Applied
-                </Typography>
-              </CardContent>
-              <CardContent sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Typography variant="body1">2023-01-01</Typography>
-              </CardContent>
-            </Card>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  HR Interview
-                </Typography>
-              </CardContent>
-              <CardContent sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Typography variant="body1">2023-01-01</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+          {dataProcess?.map((d: IApplicationsDetailCompany) => (
+            <Grid item xs={12}>
+              <Card
+                sx={{
+                  padding: "8px",
+                  marginX: "8px",
+                  marginY: "16px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  textDecoration: "none",
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                    {d.status}
+                  </Typography>
+                </CardContent>
+                <CardContent
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  <Typography variant="body1">
+                    {format(new Date(d.date), "yyyy-MM-dd")}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
         </Box>
       </>
     );
@@ -256,7 +245,7 @@ function ApplicationDetail() {
             >
               Job Title
             </Typography>
-            <Typography variant="h4">Software Engineer</Typography>
+            <Typography variant="h4">{dataCandidate?.job_title}</Typography>
           </Box>
           <Button
             id="button"
@@ -295,25 +284,7 @@ function ApplicationDetail() {
           >
             Company
           </Typography>
-          <Typography variant="h4">BOSSHIRE</Typography>
-        </Box>
-        <Box paddingX="32px" marginBottom="32px">
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            color="primary"
-            marginBottom="4px"
-          >
-            Description
-          </Typography>
-          <Typography variant="body1" marginBottom="4px">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Corrupti
-            porro sunt similique vero ut reprehenderit voluptatem aliquam
-            suscipit. Doloribus rem ut cumque, excepturi mollitia incidunt
-            labore, nulla eius commodi asperiores et quam fugit enim officia
-            quaerat hic fugiat delectus aut, laboriosam autem consequatur
-            officiis reiciendis earum? Similique consectetur iusto quam.
-          </Typography>
+          <Typography variant="h4">{dataCandidate?.company}</Typography>
         </Box>
         <Box paddingX="32px">
           <Typography
@@ -324,65 +295,33 @@ function ApplicationDetail() {
           >
             Application Process
           </Typography>
-          <Grid item xs={12}>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  Interview
-                </Typography>
-              </CardContent>
-              <CardContent sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Typography variant="body1">2023-01-01</Typography>
-              </CardContent>
-            </Card>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  Applied
-                </Typography>
-              </CardContent>
-              <CardContent sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Typography variant="body1">2023-01-01</Typography>
-              </CardContent>
-            </Card>
-            <Card
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  HR Interview
-                </Typography>
-              </CardContent>
-              <CardContent sx={{ display: "flex", justifyContent: "flex-end" }}>
-                <Typography variant="body1">2023-01-01</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
+          {dataProcess?.map((d: IApplicationsDetailCandidate) => (
+            <Grid key={d.id} item xs={12}>
+              <Card
+                sx={{
+                  padding: "8px",
+                  marginX: "8px",
+                  marginY: "16px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  textDecoration: "none",
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5" fontWeight="bold" marginBottom="8px">
+                    {d.status}
+                  </Typography>
+                </CardContent>
+                <CardContent
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  <Typography variant="body1">
+                    {format(new Date(d.date), "yyyy-MM-dd")}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
         </Box>
       </>
     );

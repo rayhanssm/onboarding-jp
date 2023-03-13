@@ -9,20 +9,12 @@ import {
 } from "../../interfaces/Job";
 import {
   Box,
-  FormControlLabel,
   Grid,
-  TextField,
   Typography,
-  FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
   Button,
   Stack,
   Card,
   CardContent,
-  CardActions,
   Pagination,
   Alert,
 } from "@mui/material";
@@ -30,6 +22,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
 import axios from "axios";
+import { format } from "date-fns";
 
 function JobDetail() {
   const navigate = useRouter();
@@ -43,6 +36,8 @@ function JobDetail() {
   );
   const [dataCandidate, setDataCandidate] =
     useState<IJobDetailCandidate | null>(null);
+  const [dataApplicants, setDataApplicants] =
+    useState<IJobDetailCompany | null>(null);
 
   useEffect(() => {
     let getUser = getCookie("user");
@@ -63,6 +58,7 @@ function JobDetail() {
         },
       });
       setDataCompany(res.data.data);
+      setDataApplicants(res.data.data.applications);
       setDataCandidate(res.data.data);
     } catch (e) {
       console.log(e);
@@ -86,7 +82,6 @@ function JobDetail() {
         },
       });
       navigate.push("/jobs");
-
     } catch (e: any) {
       setError(e.response.data.error);
     }
@@ -185,43 +180,55 @@ function JobDetail() {
           >
             Applications
           </Typography>
-          {/* {dataCompany.map((d: IJobDetailCompany) => ( */}
           <Grid item xs={12}>
-            <Card
-              // component={Link}
-              // href={"applications/" + d.id}
-              sx={{
-                padding: "8px",
-                marginX: "8px",
-                marginY: "16px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                textDecoration: "none",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h5" fontWeight="bold" marginBottom="8px">
-                  John Doe
-                </Typography>
-              </CardContent>
-              <CardContent
+            {dataApplicants?.map((d: IJobDetailCompany) => (
+              <Card
+                key={d.id}
                 sx={{
+                  padding: "8px",
+                  marginX: "8px",
+                  marginY: "16px",
                   display: "flex",
-                  justifyContent: "flex-end",
+                  justifyContent: "space-between",
                   alignItems: "center",
+                  textDecoration: "none",
                 }}
               >
-                <Typography variant="body1" marginRight="12px">
-                  2023-01-01
-                </Typography>
-                <Typography variant="h6" fontWeight="bold">
-                  Interview
-                </Typography>
-              </CardContent>
-            </Card>
+                <CardContent>
+                  <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    marginBottom="8px"
+                    component={Link}
+                    href={"../applications/" + d.id}
+                    sx={{
+                      ":hover": {
+                        color: "darkblue",
+                        transition: "0.2s",
+                      },
+                      textDecoration: "none",
+                    }}
+                  >
+                    {d.candidate}
+                  </Typography>
+                </CardContent>
+                <CardContent
+                  sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body1" marginRight="12px">
+                    {format(new Date(d.last_process_date), "yyyy-MM-dd")}
+                  </Typography>
+                  <Typography variant="h6" fontWeight="bold">
+                    {d.last_status}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
           </Grid>
-          {/* ))} */}
         </Box>
       </>
     );

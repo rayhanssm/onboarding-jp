@@ -25,7 +25,6 @@ function JobListCandidate() {
   const [user, setUser] = useState<any | null>(null);
   const [token, setToken] = useState<any | null>(null);
 
-  const [input, setInput] = useState("");
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -40,7 +39,9 @@ function JobListCandidate() {
 
   const getJobs = async () => {
     try {
-      const url = "https://onboarding-backend.bosshire.online/jobs";
+      const url =
+        // "https://onboarding-backend.bosshire.online/jobs?page=3&size=3";
+      "https://onboarding-backend.bosshire.online/jobs";
       const res = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -73,6 +74,20 @@ function JobListCandidate() {
         },
       });
       getJobs();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onSubmit = async () => {
+    try {
+      const url = "https://onboarding-backend.bosshire.online/applications";
+      const id = await axios.post(url, {
+        headers: {
+          AccessControlAllowOrigin: "*",
+          Authorization: `Bearer ${token}`,
+        },
+      });
     } catch (e) {
       console.log(e);
     }
@@ -277,11 +292,12 @@ function JobListCandidate() {
                 <CardActions sx={{ display: "flex", justifyContent: "end" }}>
                   <Button
                     component={Link}
-                    href={"jobs/" + d.id}
+                    href={"applications/"}
                     variant="contained"
                     size="large"
                     type="submit"
                     color="primary"
+                    onClick={() => onSubmit(d.id)}
                   >
                     Apply
                   </Button>

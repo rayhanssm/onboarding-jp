@@ -26,9 +26,13 @@ function CreateJob() {
       yup.object().shape({
         title: yup
           .string()
+          .trim()
+          .matches(/^[a-zA-Z ]+$/, "Title can only contain letters and spaces")
           .required("Title is required"),
         description: yup
           .string()
+          .trim()
+          .matches(/^.*\S.*$/, "Description cannot only contain spaces")
           .required("Description is required"),
         open_date: yup
           .date()
@@ -60,7 +64,6 @@ function CreateJob() {
           Authorization: `Bearer ${token}`,
         },
       });
-
       navigate.push("/jobs");
     } catch (e) {
       console.log(e);

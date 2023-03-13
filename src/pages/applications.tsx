@@ -3,15 +3,10 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import {
   Box,
-  FormControlLabel,
   Grid,
   TextField,
   Typography,
   FormControl,
-  FormLabel,
-  FormGroup,
-  FormHelperText,
-  Checkbox,
   Button,
   Stack,
   Card,
@@ -22,28 +17,54 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Drawer,
   Menu,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
+import axios from "axios";
+import { format } from "date-fns";
+import {
+  IApplicationsCandidate,
+  IApplicationsCompany,
+} from "@/interfaces/Application";
 
 function Applications() {
   const [user, setUser] = useState<any | null>(null);
   const [token, setToken] = useState<any | null>(null);
+
+  const [data, setData] = useState([]);
 
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
   }, []);
 
-  const [id, setId] = useState(0);
+  useEffect(() => {
+    let token = getCookie("access_token");
+    setToken(token);
+  }, []);
+
+  const getApplicants = async () => {
+    try {
+      const url = "https://onboarding-backend.bosshire.online/applications";
+      const res = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setData(res.data.data);
+      console.log(data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    if (!token) return;
+    getApplicants();
+  }, [token]);
 
   const [applicationStatus, setApplicationStatus] = React.useState("");
   const handleChange = (event: SelectChangeEvent) => {
@@ -55,6 +76,7 @@ function Applications() {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -118,75 +140,87 @@ function Applications() {
           <Button variant="outlined">Search</Button>
         </Stack>
         <Grid item xs={12}>
-          <Card
-            sx={{
-              padding: "8px",
-              marginX: "32px",
-              marginY: "16px",
-              display: "flex",
-              justifyContent: "space-between",
-              textDecoration: "none",
-            }}
-          >
-            <CardContent>
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                marginBottom="8px"
-                color="primary"
-                component={Link}
-                href={"applications/" + id}
+          {data.length > 0 &&
+            data.map((d: IApplicationsCompany) => (
+              <Card
+                key={d.id}
                 sx={{
-                  ":hover": {
-                    color: "darkblue",
-                    transition: "0.2s",
-                  },
-                  textDecoration: "none",
+                  padding: "8px",
+                  marginX: "32px",
+                  marginY: "16px",
+                  display: "flex",
+                  justifyContent: "space-between",
                 }}
               >
-                Software Engineer
-              </Typography>
-              <Typography variant="body1" marginBottom="4px">
-                Ari Davis
-              </Typography>
-            </CardContent>
-            <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Box marginRight="24px">
-                <Typography variant="h5" fontWeight="bold" marginBottom="4px">
-                  Interview
-                </Typography>
-                <Typography variant="body1">2023-01-01</Typography>
-              </Box>
-              <Button
-                id="button"
-                aria-controls={open ? "menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-              >
-                <MenuIcon />
-              </Button>
-              <Menu
-                id="menu"
-                aria-labelledby="button"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              >
-                <MenuItem onClick={handleClose}>HR Interview</MenuItem>
-                <MenuItem onClick={handleClose}>Client Interview</MenuItem>
-                <MenuItem onClick={handleClose}>Passed</MenuItem>
-              </Menu>
-            </CardActions>
-          </Card>
+                <CardContent>
+                  <Typography
+                    variant="h5"
+                    fontWeight="bold"
+                    marginBottom="8px"
+                    color="primary"
+                    component={Link}
+                    href={"applications/" + d.id}
+                    sx={{
+                      ":hover": {
+                        color: "darkblue",
+                        transition: "0.2s",
+                      },
+                      textDecoration: "none",
+                    }}
+                  >
+                    {d.job_title}
+                  </Typography>
+                  <Typography variant="body1" marginBottom="4px">
+                    {d.candidate}
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{ display: "flex", justifyContent: "flex-end" }}
+                >
+                  <Box marginRight="24px">
+                    <Typography
+                      variant="h5"
+                      fontWeight="bold"
+                      marginBottom="4px"
+                    >
+                      {d.last_status}
+                    </Typography>
+                    <Typography variant="body1">
+                      {format(new Date(d.last_process_date), "yyyy-MM-dd")}
+                    </Typography>
+                  </Box>
+                  <Button
+                    id="button"
+                    aria-controls={open ? "menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                    onClick={handleClick}
+                  >
+                    <MenuIcon />
+                  </Button>
+                  <Menu
+                    id="menu"
+                    aria-labelledby="button"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                    transformOrigin={{
+                      vertical: "top",
+                      horizontal: "left",
+                    }}
+                  >
+                    <MenuItem onClick={handleClose}>HR Interview</MenuItem>
+                    <MenuItem onClick={handleClose}>Client Interview</MenuItem>
+                    <MenuItem onClick={handleClose}>Passed</MenuItem>
+                    <MenuItem onClick={handleClose}>Rejected</MenuItem>
+                  </Menu>
+                </CardActions>
+              </Card>
+            ))}
         </Grid>
       </>
     );
@@ -246,76 +280,79 @@ function Applications() {
           </Box>
           <Button variant="outlined">Search</Button>
         </Stack>
-        <Grid item xs={12}>
-          <Card
-            sx={{
-              padding: "8px",
-              marginX: "8px",
-              marginY: "16px",
-              display: "flex",
-              justifyContent: "space-between",
-              textDecoration: "none",
-            }}
-          >
-            <CardContent>
-              <Typography
-                variant="h5"
-                fontWeight="bold"
-                marginBottom="8px"
-                color="primary"
-                component={Link}
-                href={"applications/" + id}
-                sx={{
-                  ":hover": {
-                    color: "darkblue",
-                    transition: "0.2s",
-                  },
-                  textDecoration: "none",
-                }}
-              >
-                Software Engineer
-              </Typography>
-              <Typography variant="body1" marginBottom="4px">
-                BOSSHIRE
-              </Typography>
-            </CardContent>
-            <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Box marginRight="24px">
-                <Typography variant="h5" fontWeight="bold" marginBottom="4px">
-                  Interview
+        {data.map((d: IApplicationsCandidate) => (
+          <Grid key={d.id} item xs={12}>
+            <Card
+              sx={{
+                padding: "8px",
+                marginX: "8px",
+                marginY: "16px",
+                display: "flex",
+                justifyContent: "space-between",
+                textDecoration: "none",
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="h5"
+                  fontWeight="bold"
+                  marginBottom="8px"
+                  color="primary"
+                  component={Link}
+                  href={"applications/" + d.id}
+                  sx={{
+                    ":hover": {
+                      color: "darkblue",
+                      transition: "0.2s",
+                    },
+                    textDecoration: "none",
+                  }}
+                >
+                  {d.job_title}
                 </Typography>
-                <Typography variant="body1">2023-01-01</Typography>
-              </Box>
-              <Button
-                id="button"
-                aria-controls={open ? "menu" : undefined}
-                aria-haspopup="true"
-                aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
-              >
-                <MenuIcon />
-              </Button>
-              <Menu
-                id="menu"
-                aria-labelledby="button"
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              >
-                <MenuItem onClick={handleClose}>Applied</MenuItem>
-                <MenuItem onClick={handleClose}>Cancelled</MenuItem>
-              </Menu>
-            </CardActions>
-          </Card>
-        </Grid>
+                <Typography variant="body1" marginBottom="4px">
+                  {d.company}
+                </Typography>
+              </CardContent>
+              <CardActions sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <Box marginRight="24px">
+                  <Typography variant="h5" fontWeight="bold" marginBottom="4px">
+                    {d.last_status}
+                  </Typography>
+                  <Typography variant="body1">
+                    {format(new Date(d.last_process_date), "yyyy-MM-dd")}
+                  </Typography>
+                </Box>
+                <Button
+                  id="button"
+                  aria-controls={open ? "menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? "true" : undefined}
+                  onClick={handleClick}
+                >
+                  <MenuIcon />
+                </Button>
+                <Menu
+                  id="menu"
+                  aria-labelledby="button"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                >
+                  <MenuItem onClick={handleClose}>Cancelled</MenuItem>
+                </Menu>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
       </>
     );
   }
