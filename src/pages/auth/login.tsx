@@ -39,8 +39,8 @@ function Login() {
   const onSubmit: SubmitHandler<IFormLogin> = async (data: IFormLogin) => {
     try {
       const payloadLogin: AuthLoginRequest = data;
-      const urlLogin = "https://onboarding-backend.bosshire.online/auth/login";
-      const urlGetUser = "https://onboarding-backend.bosshire.online/auth/user";
+      const urlLogin = "https://f330-117-54-139-186.ngrok.io/auth/login";
+      const urlGetUser = "https://f330-117-54-139-186.ngrok.io/auth/user";
 
       const res = await axios.post(urlLogin, payloadLogin);
       const { token } = res.data.data;

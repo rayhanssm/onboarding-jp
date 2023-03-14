@@ -32,7 +32,10 @@ function CreateJob() {
         description: yup
           .string()
           .trim()
-          .matches(/^.*\S.*$/, "Description cannot only contain spaces")
+          .matches(
+            /^.*\S.*$|^[\s\S]*\n[\s\S]*$/,
+            "Description cannot only contain spaces"
+          )
           .required("Description is required"),
         open_date: yup
           .date()

@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
 import axios from "axios";
 import { format } from "date-fns";
+import ReactDOM from "react-dom/client";
 
 function JobDetail() {
   const navigate = useRouter();
@@ -36,8 +37,7 @@ function JobDetail() {
   );
   const [dataCandidate, setDataCandidate] =
     useState<IJobDetailCandidate | null>(null);
-  const [dataApplicants, setDataApplicants] =
-    useState<IJobDetailCompany | null>(null);
+  const [dataApplicants, setDataApplicants] = useState([]);
 
   useEffect(() => {
     let getUser = getCookie("user");
@@ -169,7 +169,10 @@ function JobDetail() {
           >
             Description
           </Typography>
-          <Typography variant="body2">{dataCompany?.description}</Typography>
+          {/* <div
+            // variant="body2"
+            dangerouslySetInnerHTML={{ __html: dataCompany?.description }}
+          ></div> */}
         </Box>
         <Box paddingX="32px">
           <Typography
@@ -181,7 +184,7 @@ function JobDetail() {
             Applications
           </Typography>
           <Grid item xs={12}>
-            {dataApplicants?.map((d: IJobDetailCompany) => (
+            {dataApplicants.map((d: IJobDetailCompany) => (
               <Card
                 key={d.id}
                 sx={{

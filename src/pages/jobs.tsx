@@ -26,6 +26,7 @@ function JobListCandidate() {
   const [token, setToken] = useState<any | null>(null);
 
   const [data, setData] = useState([]);
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     let getUser = getCookie("user");
@@ -39,9 +40,8 @@ function JobListCandidate() {
 
   const getJobs = async () => {
     try {
-      const url =
-        // "https://onboarding-backend.bosshire.online/jobs?page=3&size=3";
-      "https://onboarding-backend.bosshire.online/jobs";
+      const baseUrl = "https://onboarding-backend.bosshire.online/jobs";
+      let url = title == "" ? `${baseUrl}` : `${baseUrl}?title=${title}`;
       const res = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ function JobListCandidate() {
   useEffect(() => {
     getJobs();
     // .then(res=>setData(res));
-  }, [token]);
+  }, [token, title]);
 
   // const handleInput = (e) => {
   //   console.log(e.target.value);
@@ -81,8 +81,10 @@ function JobListCandidate() {
 
   const onSubmit = async () => {
     try {
+      const payload = data;
+      console.log(payload);
       const url = "https://onboarding-backend.bosshire.online/applications";
-      const id = await axios.post(url, {
+      await axios.post(url, payload, {
         headers: {
           AccessControlAllowOrigin: "*",
           Authorization: `Bearer ${token}`,
@@ -138,9 +140,11 @@ function JobListCandidate() {
             label="Search"
             variant="outlined"
             size="small"
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
             sx={{ width: "50%" }}
           />
-          <Button variant="outlined">Search</Button>
         </Stack>
         <Grid container>
           <Button
@@ -245,9 +249,11 @@ function JobListCandidate() {
             label="Search"
             variant="outlined"
             size="small"
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
             sx={{ width: "50%" }}
           />
-          <Button variant="outlined">Search</Button>
         </Stack>
         <Grid container>
           {data.map((d: IJobList) => (
@@ -297,7 +303,7 @@ function JobListCandidate() {
                     size="large"
                     type="submit"
                     color="primary"
-                    onClick={() => onSubmit(d.id)}
+                    // onClick={() => onSubmit(d.id)}
                   >
                     Apply
                   </Button>

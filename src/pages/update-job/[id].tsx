@@ -9,17 +9,9 @@ import * as yup from "yup";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import {
-  Box,
-  TextField,
-  Typography,
-  Stack,
-  Alert,
-} from "@mui/material";
+import { Box, TextField, Typography, Stack, Alert } from "@mui/material";
 import Link from "next/link";
-import {
-  IFormJob,
-} from "@/interfaces/Job";
+import { IFormJob } from "@/interfaces/Job";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { getCookie } from "@/services/cookie";
@@ -40,11 +32,12 @@ function UpdateJob() {
         description: yup
           .string()
           .trim()
-          .matches(/^.*\S.*$/, "Description cannot only contain spaces")
+          .matches(
+            /^.*\S.*$|^[\s\S]*\n[\s\S]*$/,
+            "Description cannot only contain spaces"
+          )
           .required("Description is required"),
-        open_date: yup
-          .date()
-          .required("Open date is required"),
+        open_date: yup.date().required("Open date is required"),
         close_date: yup
           .date()
           .required("Close date is required")
