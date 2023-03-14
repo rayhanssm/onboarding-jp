@@ -34,8 +34,7 @@ function ApplicationDetail() {
     useState<IApplicationsDetailCompany | null>(null);
   const [dataCandidate, setDataCandidate] =
     useState<IApplicationsDetailCandidate | null>(null);
-  const [dataProcess, setDataProcess] =
-    useState<IApplicationsDetailCompany | null>(null);
+  const [dataProcess, setDataProcess] = useState([]);
 
   useEffect(() => {
     let getUser = getCookie("user");
@@ -173,7 +172,7 @@ function ApplicationDetail() {
           >
             Application Process
           </Typography>
-          {dataProcess?.map((d: IApplicationsDetailCompany) => (
+          {dataProcess.map((d: IApplicationsDetailCompany) => (
             <Grid item xs={12}>
               <Card
                 sx={{

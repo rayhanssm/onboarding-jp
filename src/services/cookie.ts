@@ -21,6 +21,11 @@ const getCookie = (cname: string) => {
   return "";
 }
 
+const deleteCookie = (uname: string, tname: string) => {
+  document.cookie = `${uname}= ; expires = Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+  document.cookie = `${tname}= ; expires = Thu, 01 Jan 1970 00:00:00 GMT; path=/;`;
+}
+
 export {
-    setCookie, getCookie
+    setCookie, getCookie, deleteCookie
 }

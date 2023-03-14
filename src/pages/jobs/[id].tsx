@@ -87,6 +87,26 @@ function JobDetail() {
     }
   };
 
+  const onSubmit = async (job_id: number | undefined) => {
+    try {
+      const url = "https://onboarding-backend.bosshire.online/applications";
+      await axios.post(
+        url,
+        {
+          job_id,
+        },
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   let jobDetailContent;
 
   if (user && user.role === "Company") {
@@ -169,10 +189,7 @@ function JobDetail() {
           >
             Description
           </Typography>
-          {/* <div
-            // variant="body2"
-            dangerouslySetInnerHTML={{ __html: dataCompany?.description }}
-          ></div> */}
+          <Typography variant="body2">{dataCandidate?.description}</Typography>
         </Box>
         <Box paddingX="32px">
           <Typography
@@ -292,10 +309,13 @@ function JobDetail() {
         </Box>
         <Box paddingX="32px" marginBottom="24px">
           <Button
+            component={Link}
+            href={"../applications/"}
             variant="contained"
             size="large"
             type="submit"
             color="primary"
+            onClick={() => onSubmit(dataCompany?.id)}
           >
             Apply
           </Button>

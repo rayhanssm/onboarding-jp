@@ -21,6 +21,6 @@ export interface IJobDetailCandidate extends IJobList {
     id: number;
 }
 
-export interface IJobDetailCompany extends IJobList, IApplicationsCompany{
+export interface IJobDetailCompany extends IJobList, IApplicationsCompany {
     id: number;
 }

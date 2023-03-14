@@ -18,7 +18,7 @@ import { getCookie } from "@/services/cookie";
 
 function CreateJob() {
   const navigate = useRouter();
-  
+
   const [token, setToken] = useState<any | null>(null);
 
   const methods = useForm<IFormJob>({
@@ -37,9 +37,7 @@ function CreateJob() {
             "Description cannot only contain spaces"
           )
           .required("Description is required"),
-        open_date: yup
-          .date()
-          .required("Open date is required"),
+        open_date: yup.date().required("Open date is required"),
         close_date: yup
           .date()
           .required("Close date is required")
@@ -60,7 +58,6 @@ function CreateJob() {
     try {
       const payload: IFormJob = data;
       const url = "https://onboarding-backend.bosshire.online/jobs";
-
       await axios.post(url, payload, {
         headers: {
           AccessControlAllowOrigin: "*",

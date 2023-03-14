@@ -13,10 +13,9 @@ import {
   CardContent,
   CardActions,
   Pagination,
-  Autocomplete,
 } from "@mui/material";
 import Link from "next/link";
-import { getCookie } from "@/services/cookie";
+import { deleteCookie, getCookie, setCookie } from "@/services/cookie";
 import axios from "axios";
 import { differenceInDays, format } from "date-fns";
 import { useRouter } from "next/router";
@@ -38,17 +37,29 @@ function JobListCandidate() {
     setToken(token);
   }, []);
 
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const handlePageChange = (event: any, value: any) => {
+    setPage(value);
+  };
+
+  const size: number = data.length;
+
+  const startIndex = (page - 1) * size; //(2 - 1) * 3
+  const endIndex = startIndex + size; // 3 + 3
+  const pageData = data.slice(startIndex, endIndex);
+
   const getJobs = async () => {
     try {
-      const baseUrl = "https://onboarding-backend.bosshire.online/jobs";
-      let url = title == "" ? `${baseUrl}` : `${baseUrl}?title=${title}`;
+      const baseUrl = `https://onboarding-backend.bosshire.online/jobs?page=${page}&size=${9}`;
+      let url = title == "" ? `${baseUrl}` : `${baseUrl}&title=${title}`;
       const res = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setData(res.data.data);
-      // return res.data.data
     } catch (e) {
       console.log(e);
     }
@@ -56,13 +67,7 @@ function JobListCandidate() {
 
   useEffect(() => {
     getJobs();
-    // .then(res=>setData(res));
-  }, [token, title]);
-
-  // const handleInput = (e) => {
-  //   console.log(e.target.value);
-  //   setInput(e.target.value.toLowerCase());
-  // };
+  }, [token, title, page]);
 
   const onDelete = async (id: number) => {
     try {
@@ -79,29 +84,25 @@ function JobListCandidate() {
     }
   };
 
-  const onSubmit = async () => {
+  const onSubmit = async (job_id: number) => {
     try {
-      const payload = data;
-      console.log(payload);
       const url = "https://onboarding-backend.bosshire.online/applications";
-      await axios.post(url, payload, {
-        headers: {
-          AccessControlAllowOrigin: "*",
-          Authorization: `Bearer ${token}`,
+      await axios.post(
+        url,
+        {
+          job_id,
         },
-      });
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
     } catch (e) {
       console.log(e);
     }
   };
-
-  // const [page, setPage] = useState(1);
-
-  // const handlePageChange = (e, value) => {
-  //   setPage(value);
-  // };
-
-  console.log(data);
 
   let jobContent;
 
@@ -123,7 +124,8 @@ function JobListCandidate() {
                 variant="contained"
                 color="error"
                 component={Link}
-                href="/"
+                href="/auth/login"
+                onClick={() => deleteCookie("user", "access_token")}
               >
                 Logout
               </Button>
@@ -211,7 +213,13 @@ function JobListCandidate() {
             </Grid>
           ))}
         </Grid>
-        {/* <Pagination count={3} page={page} onChange={handlePageChange} /> */}
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Pagination
+            // count={pageData}
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Box>
       </>
     );
   } else {
@@ -232,7 +240,8 @@ function JobListCandidate() {
                 variant="contained"
                 color="error"
                 component={Link}
-                href="/"
+                href="/auth/login"
+                onClick={() => deleteCookie("user", "access_token")}
               >
                 Logout
               </Button>
@@ -303,7 +312,7 @@ function JobListCandidate() {
                     size="large"
                     type="submit"
                     color="primary"
-                    // onClick={() => onSubmit(d.id)}
+                    onClick={() => onSubmit(d.id)}
                   >
                     Apply
                   </Button>
@@ -312,7 +321,13 @@ function JobListCandidate() {
             </Grid>
           ))}
         </Grid>
-        {/* <Pagination count={3} page={page} onChange={handlePageChange} /> */}
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Pagination
+            // count={pageData}
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Box>
       </>
     );
   }
