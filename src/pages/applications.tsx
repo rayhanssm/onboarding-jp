@@ -22,7 +22,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getCookie } from "@/services/cookie";
+import { deleteCookie, getCookie } from "@/services/cookie";
 import axios from "axios";
 import { format } from "date-fns";
 import {
@@ -35,6 +35,7 @@ function Applications() {
   const [token, setToken] = useState<any | null>(null);
 
   const [data, setData] = useState([]);
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
     let getUser = getCookie("user");
@@ -45,6 +46,40 @@ function Applications() {
     let token = getCookie("access_token");
     setToken(token);
   }, []);
+
+  const onSubmit = async (application_id: number, status_id: number) => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/applications/${application_id}/proceed`;
+      await axios.post(
+        url,
+        {
+          application_id,
+          status_id,
+        },
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      handleClose();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const [page, setPage] = useState(1);
+
+  const handlePageChange = (event: any, value: any) => {
+    setPage(value);
+  };
+
+  const size: number = data.length;
+
+  const startIndex = (page - 1) * size;
+  const endIndex = startIndex + size;
+  const pageData: any = data.slice(startIndex, endIndex);
 
   const getApplicants = async () => {
     try {
@@ -64,7 +99,7 @@ function Applications() {
   useEffect(() => {
     if (!token) return;
     getApplicants();
-  }, [token]);
+  }, [token, title, page]);
 
   const [applicationStatus, setApplicationStatus] = React.useState("");
   const handleChange = (event: SelectChangeEvent) => {
@@ -101,7 +136,8 @@ function Applications() {
                 variant="contained"
                 color="error"
                 component={Link}
-                href="/"
+                href="/auth/login"
+                onClick={() => deleteCookie("user", "access_token")}
               >
                 Logout
               </Button>
@@ -118,6 +154,9 @@ function Applications() {
             label="Search"
             variant="outlined"
             size="small"
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
             sx={{ width: "50%" }}
           />
           <Box width="200px">
@@ -213,15 +252,30 @@ function Applications() {
                       horizontal: "left",
                     }}
                   >
-                    <MenuItem onClick={handleClose}>HR Interview</MenuItem>
-                    <MenuItem onClick={handleClose}>Client Interview</MenuItem>
-                    <MenuItem onClick={handleClose}>Passed</MenuItem>
-                    <MenuItem onClick={handleClose}>Rejected</MenuItem>
+                    <MenuItem onClick={() => onSubmit(d.id, 2)}>
+                      HR Interview
+                    </MenuItem>
+                    <MenuItem onClick={() => onSubmit(d.id, 3)}>
+                      Client Interview
+                    </MenuItem>
+                    <MenuItem onClick={() => onSubmit(d.id, 4)}>
+                      Passed
+                    </MenuItem>
+                    <MenuItem onClick={() => onSubmit(d.id, 5)}>
+                      Rejected
+                    </MenuItem>
                   </Menu>
                 </CardActions>
               </Card>
             ))}
         </Grid>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Pagination
+            count={pageData}
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Box>
       </>
     );
   } else {
@@ -242,7 +296,8 @@ function Applications() {
                 variant="contained"
                 color="error"
                 component={Link}
-                href="/"
+                href="/auth/login"
+                onClick={() => deleteCookie("user", "access_token")}
               >
                 Logout
               </Button>
@@ -347,12 +402,21 @@ function Applications() {
                     horizontal: "left",
                   }}
                 >
-                  <MenuItem onClick={handleClose}>Cancelled</MenuItem>
+                  <MenuItem onClick={() => onSubmit(d.id, 5)}>
+                    Cancelled
+                  </MenuItem>
                 </Menu>
               </CardActions>
             </Card>
           </Grid>
         ))}
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <Pagination
+            count={pageData}
+            page={page}
+            onChange={handlePageChange}
+          />
+        </Box>
       </>
     );
   }

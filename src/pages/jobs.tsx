@@ -65,6 +65,7 @@ function JobListCandidate() {
   };
 
   useEffect(() => {
+    if (!token) return;
     getJobs();
   }, [token, title, page]);
 

@@ -15,7 +15,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { getCookie } from "@/services/cookie";
+import { deleteCookie, getCookie } from "@/services/cookie";
 import axios from "axios";
 import {
   IApplicationsDetailCandidate,
@@ -73,6 +73,28 @@ function ApplicationDetail() {
     setAnchorEl(event.currentTarget);
   };
 
+  const onSubmit = async (application_id: any, status_id: number) => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/applications/${application_id}/proceed`;
+      await axios.post(
+        url,
+        {
+          application_id,
+          status_id,
+        },
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      handleClose();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -97,7 +119,8 @@ function ApplicationDetail() {
                 variant="contained"
                 color="error"
                 component={Link}
-                href="/"
+                href="/auth/login"
+                onClick={() => deleteCookie("user", "access_token")}
               >
                 Logout
               </Button>
@@ -147,9 +170,18 @@ function ApplicationDetail() {
               horizontal: "left",
             }}
           >
-            <MenuItem onClick={handleClose}>HR Interview</MenuItem>
-            <MenuItem onClick={handleClose}>Client Interview</MenuItem>
-            <MenuItem onClick={handleClose}>Passed</MenuItem>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 2)}>
+              HR Interview
+            </MenuItem>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 3)}>
+              Client Interview
+            </MenuItem>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 4)}>
+              Passed
+            </MenuItem>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 5)}>
+              Rejected
+            </MenuItem>
           </Menu>
         </Box>
         <Box paddingX="32px" marginBottom="32px">
@@ -221,7 +253,8 @@ function ApplicationDetail() {
                 variant="contained"
                 color="error"
                 component={Link}
-                href="/"
+                href="/auth/login"
+                onClick={() => deleteCookie("user", "access_token")}
               >
                 Logout
               </Button>
@@ -271,7 +304,9 @@ function ApplicationDetail() {
               horizontal: "left",
             }}
           >
-            <MenuItem onClick={handleClose}>Cancelled</MenuItem>
+            <MenuItem onClick={() => onSubmit(dataCandidate?.id, 6)}>
+              Cancelled
+            </MenuItem>
           </Menu>
         </Box>
         <Box paddingX="32px" marginBottom="32px">

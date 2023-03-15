@@ -27,7 +27,10 @@ function CreateJob() {
         title: yup
           .string()
           .trim()
-          .matches(/^[a-zA-Z/ ]+$/, "Title can only contain letters and spaces")
+          .matches(
+            /^[a-zA-Z/- ]+$/,
+            "Title can only contain letters and spaces"
+          )
           .required("Title is required"),
         description: yup
           .string()
