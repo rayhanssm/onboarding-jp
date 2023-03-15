@@ -28,7 +28,7 @@ function CreateJob() {
           .string()
           .trim()
           .matches(
-            /^[a-zA-Z/- ]+$/,
+            /^[a-zA-Z/ ]+$/,
             "Title can only contain letters and spaces"
           )
           .required("Title is required"),
