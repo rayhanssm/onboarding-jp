@@ -38,7 +38,6 @@ function JobListCandidate() {
   }, []);
 
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(0);
 
   const handlePageChange = (event: any, value: any) => {
     setPage(value);
@@ -46,9 +45,9 @@ function JobListCandidate() {
 
   const size: number = data.length;
 
-  const startIndex = (page - 1) * size; //(2 - 1) * 3
-  const endIndex = startIndex + size; // 3 + 3
-  const pageData = data.slice(startIndex, endIndex);
+  const startIndex = (page - 1) * size;
+  const endIndex = startIndex + size;
+  const pageData:any = data.slice(startIndex, endIndex);
 
   const getJobs = async () => {
     try {
@@ -215,7 +214,7 @@ function JobListCandidate() {
         </Grid>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Pagination
-            // count={pageData}
+            count={pageData}
             page={page}
             onChange={handlePageChange}
           />
@@ -323,7 +322,7 @@ function JobListCandidate() {
         </Grid>
         <Box display="flex" justifyContent="center" alignItems="center">
           <Pagination
-            // count={pageData}
+            count={pageData}
             page={page}
             onChange={handlePageChange}
           />
