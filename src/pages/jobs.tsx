@@ -18,7 +18,6 @@ import Link from "next/link";
 import { deleteCookie, getCookie, setCookie } from "@/services/cookie";
 import axios from "axios";
 import { differenceInDays, format } from "date-fns";
-import { useRouter } from "next/router";
 
 function JobListCandidate() {
   const [user, setUser] = useState<any | null>(null);
@@ -30,9 +29,6 @@ function JobListCandidate() {
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
-  }, []);
-
-  useEffect(() => {
     let token = getCookie("access_token");
     setToken(token);
   }, []);

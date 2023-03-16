@@ -21,7 +21,6 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { deleteCookie, getCookie } from "@/services/cookie";
 import axios from "axios";
 import { format } from "date-fns";
@@ -40,34 +39,9 @@ function Applications() {
   useEffect(() => {
     let getUser = getCookie("user");
     setUser(JSON.parse(getUser));
-  }, []);
-
-  useEffect(() => {
     let token = getCookie("access_token");
     setToken(token);
   }, []);
-
-  const onSubmit = async (application_id: number, status_id: number) => {
-    try {
-      const url = `https://onboarding-backend.bosshire.online/applications/${application_id}/proceed`;
-      await axios.post(
-        url,
-        {
-          application_id,
-          status_id,
-        },
-        {
-          headers: {
-            AccessControlAllowOrigin: "*",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      handleClose();
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const [page, setPage] = useState(1);
 
@@ -83,14 +57,14 @@ function Applications() {
 
   const getApplicants = async () => {
     try {
-      const url = "https://onboarding-backend.bosshire.online/applications";
+      const baseUrl = `https://onboarding-backend.bosshire.online/applications?page=${page}&size=${9}`;
+      let url = title == "" ? `${baseUrl}` : `${baseUrl}&title=${title}`;
       const res = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setData(res.data.data);
-      console.log(data);
     } catch (e) {
       console.log(e);
     }
@@ -114,6 +88,51 @@ function Applications() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const onSubmit = async (application_id: number, status_id: number) => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/applications/${application_id}/proceed`;
+      await axios.post(
+        url,
+        {
+          application_id,
+          status_id,
+        },
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      handleClose();
+      getApplicants();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onCancel = async (application_id: any) => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/applications/${application_id}/cancel`;
+      await axios.post(
+        url,
+        {
+          application_id,
+        },
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      handleClose();
+      getApplicants();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   let applicationsContent;
@@ -176,7 +195,6 @@ function Applications() {
               </Select>
             </FormControl>
           </Box>
-          <Button variant="outlined">Search</Button>
         </Stack>
         <Grid item xs={12}>
           {data.length > 0 &&
@@ -314,6 +332,9 @@ function Applications() {
             label="Search"
             variant="outlined"
             size="small"
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
             sx={{ width: "50%" }}
           />
           <Box width="200px">
@@ -333,7 +354,6 @@ function Applications() {
               </Select>
             </FormControl>
           </Box>
-          <Button variant="outlined">Search</Button>
         </Stack>
         {data.map((d: IApplicationsCandidate) => (
           <Grid key={d.id} item xs={12}>
@@ -402,9 +422,7 @@ function Applications() {
                     horizontal: "left",
                   }}
                 >
-                  <MenuItem onClick={() => onSubmit(d.id, 5)}>
-                    Cancelled
-                  </MenuItem>
+                  <MenuItem onClick={() => onCancel(d.id)}>Cancelled</MenuItem>
                 </Menu>
               </CardActions>
             </Card>

@@ -90,6 +90,29 @@ function ApplicationDetail() {
         }
       );
       handleClose();
+      getApplicantDetail();
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const onCancel = async (application_id: any) => {
+    try {
+      const url = `https://onboarding-backend.bosshire.online/applications/${application_id}/cancel`;
+      await axios.post(
+        url,
+        {
+          application_id,
+        },
+        {
+          headers: {
+            AccessControlAllowOrigin: "*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      handleClose();
+      getApplicantDetail();
     } catch (e) {
       console.log(e);
     }
@@ -170,16 +193,16 @@ function ApplicationDetail() {
               horizontal: "left",
             }}
           >
-            <MenuItem onClick={() => onSubmit(dataCompany?.id, 2)}>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 1)}>
               HR Interview
             </MenuItem>
-            <MenuItem onClick={() => onSubmit(dataCompany?.id, 3)}>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 2)}>
               Client Interview
             </MenuItem>
-            <MenuItem onClick={() => onSubmit(dataCompany?.id, 4)}>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 3)}>
               Passed
             </MenuItem>
-            <MenuItem onClick={() => onSubmit(dataCompany?.id, 5)}>
+            <MenuItem onClick={() => onSubmit(dataCompany?.id, 4)}>
               Rejected
             </MenuItem>
           </Menu>
@@ -304,7 +327,7 @@ function ApplicationDetail() {
               horizontal: "left",
             }}
           >
-            <MenuItem onClick={() => onSubmit(dataCandidate?.id, 6)}>
+            <MenuItem onClick={() => onCancel(dataCandidate?.id)}>
               Cancelled
             </MenuItem>
           </Menu>
